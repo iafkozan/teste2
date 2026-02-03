@@ -3,67 +3,296 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Teste de Estudo</title>
+  <title>Teste - Cargas</title>
   <style>
-    body{font-family:Arial, sans-serif; margin:24px; max-width:900px}
-    h1{margin:0 0 16px}
-    .card{border:1px solid #ddd; border-radius:10px; padding:16px; margin:12px 0}
-    label{display:block; font-size:14px; margin:10px 0 6px}
-    input{width:100%; padding:10px; font-size:16px; border:1px solid #ccc; border-radius:8px}
-    button{margin-top:14px; padding:10px 14px; font-size:16px; border:0; border-radius:8px; cursor:pointer}
-    .muted{color:#666; font-size:13px}
-    .result{white-space:pre-wrap; background:#f7f7f7}
+    body{font-family:Arial,sans-serif;margin:24px;max-width:1000px}
+    h1{margin:0 0 12px}
+    .card{border:1px solid #ddd;border-radius:10px;padding:16px;margin:12px 0}
+    .row{display:grid;grid-template-columns: 110px 220px 120px 120px 110px 110px;gap:10px;align-items:end}
+    label{display:block;font-size:12px;color:#444;margin:6px 0}
+    input,select{width:100%;padding:9px;font-size:14px;border:1px solid #ccc;border-radius:8px}
+    button{padding:10px 12px;font-size:14px;border:0;border-radius:8px;cursor:pointer}
+    .btns{display:flex;gap:10px;flex-wrap:wrap}
+    .muted{color:#666;font-size:12px}
+    .err{color:#b00020;font-size:12px;margin-top:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #eee;padding:8px;text-align:left;font-size:14px}
+    .right{text-align:right}
+    .pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#f2f2f2;font-size:12px}
     @media print{
       .no-print{display:none !important}
       body{margin:0}
-      .card{border:0; padding:0}
-      .result{background:#fff}
+      .card{border:0;padding:0}
+      th,td{border-bottom:1px solid #ddd}
     }
   </style>
 </head>
 <body>
   <div class="no-print">
-    <h1>Teste de Estudo</h1>
-    <div class="card">
-      <label for="vendedor">Vendedor</label>
-      <input id="vendedor" placeholder="ex.: NS0001" />
+    <h1>Teste - Cargas</h1>
+    <div class="muted">Regra: só adiciona nova linha se a última estiver válida. Preset preenche potência/tempo/surto; quantidade é manual.</div>
+  </div>
 
-      <label for="codigo">Código do estudo</label>
-      <input id="codigo" placeholder="ex.: 250203120501_NS0001_CLIENTE" />
+  <div class="card no-print">
+    <div id="cargas"></div>
 
-      <button id="btn">Gerar</button>
-      <div class="muted">Dica: depois de gerar, use Ctrl+P para imprimir.</div>
+    <div class="btns" style="margin-top:14px">
+      <button id="btnAdd">Adicionar carga</button>
+      <button id="btnCalc">Calcular</button>
+      <button id="btnLimpar">Limpar</button>
+      <button id="btnPrint">Imprimir (Ctrl+P)</button>
+    </div>
+
+    <div id="msg" class="err" style="display:none"></div>
+  </div>
+
+  <div id="resultado" class="card" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <h2 style="margin:0">Resultado</h2>
+      <span class="pill" id="tagStatus">OK</span>
+    </div>
+
+    <div style="margin-top:10px" class="muted">
+      Energia diária (Wh/dia) = quantidade × potência(W) × tempo(h/dia) • Pico (W) = quantidade × potência(W) × surto(x)
+    </div>
+
+    <div style="margin-top:12px;overflow:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th class="right">Qtd</th>
+            <th class="right">Potência (W)</th>
+            <th class="right">Tempo (h/dia)</th>
+            <th class="right">Surto (x)</th>
+            <th class="right">Energia (Wh/dia)</th>
+            <th class="right">Pico (W)</th>
+          </tr>
+        </thead>
+        <tbody id="tb"></tbody>
+        <tfoot>
+          <tr>
+            <th colspan="6" class="right">Totais</th>
+            <th class="right" id="totWh">0</th>
+            <th class="right" id="totPico">0</th>
+          </tr>
+        </tfoot>
+      </table>
     </div>
   </div>
 
-  <div id="saida" class="card" style="display:none">
-    <h2>Resultado (mock)</h2>
-    <div id="resumo" class="result card"></div>
-  </div>
+<script>
+  const presets = [
+    { id:"lampada_led", label:"Lâmpada LED", potencia:9,   tempo:5, surto:1.0 },
+    { id:"tv",         label:"TV",          potencia:100, tempo:4, surto:1.2 },
+    { id:"celular",    label:"Carregador de celular", potencia:10, tempo:2, surto:1.0 },
+    { id:"geladeira",  label:"Geladeira",   potencia:150, tempo:8, surto:3.0 },
+    { id:"bomba",      label:"Bomba d'água",potencia:500, tempo:1, surto:3.0 },
+    { id:"outro",      label:"Outro (manual)", potencia:null, tempo:null, surto:null }
+  ];
 
-  <script>
-    const $ = (id) => document.getElementById(id);
+  const $ = (id) => document.getElementById(id);
+  const cargasEl = $("cargas");
+  const msgEl = $("msg");
 
-    $("btn").addEventListener("click", () => {
-      const vendedor = $("vendedor").value.trim();
-      const codigo = $("codigo").value.trim();
+  function showMsg(t){
+    msgEl.textContent = t;
+    msgEl.style.display = t ? "block" : "none";
+  }
 
-      if (!vendedor || !codigo) {
-        alert("Preencha Vendedor e Código.");
+  function num(v){
+    const x = Number(String(v).replace(",", "."));
+    return Number.isFinite(x) ? x : NaN;
+  }
+
+  function makeRow(index){
+    const wrap = document.createElement("div");
+    wrap.className = "card";
+    wrap.dataset.idx = index;
+
+    wrap.innerHTML = `
+      <div class="row">
+        <div>
+          <label>Qtd</label>
+          <input inputmode="numeric" placeholder="1" data-k="qtd">
+        </div>
+
+        <div>
+          <label>Item</label>
+          <select data-k="item"></select>
+        </div>
+
+        <div>
+          <label>Potência (W)</label>
+          <input inputmode="decimal" placeholder="ex.: 100" data-k="pot">
+        </div>
+
+        <div>
+          <label>Tempo (h/dia)</label>
+          <input inputmode="decimal" placeholder="ex.: 4" data-k="tempo">
+        </div>
+
+        <div>
+          <label>Surto (x)</label>
+          <input inputmode="decimal" placeholder="ex.: 3" data-k="surto">
+        </div>
+
+        <div>
+          <label>&nbsp;</label>
+          <button data-k="rem">Remover</button>
+        </div>
+      </div>
+      <div class="muted" style="margin-top:8px">Linha ${index+1}</div>
+    `;
+
+    const sel = wrap.querySelector('select[data-k="item"]');
+    presets.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = p.id;
+      opt.textContent = p.label;
+      sel.appendChild(opt);
+    });
+
+    sel.addEventListener("change", () => applyPreset(wrap, sel.value));
+    wrap.querySelector('button[data-k="rem"]').addEventListener("click", () => {
+      wrap.remove();
+      renumber();
+      showMsg("");
+    });
+
+    return wrap;
+  }
+
+  function applyPreset(rowEl, presetId){
+    const p = presets.find(x => x.id === presetId);
+    if(!p) return;
+
+    const pot = rowEl.querySelector('input[data-k="pot"]');
+    const tempo = rowEl.querySelector('input[data-k="tempo"]');
+    const surto = rowEl.querySelector('input[data-k="surto"]');
+
+    if (p.potencia != null) pot.value = String(p.potencia);
+    if (p.tempo != null) tempo.value = String(p.tempo);
+    if (p.surto != null) surto.value = String(p.surto);
+  }
+
+  function getRows(){
+    return Array.from(cargasEl.querySelectorAll('[data-idx]'));
+  }
+
+  function renumber(){
+    getRows().forEach((r, i) => {
+      r.dataset.idx = i;
+      const m = r.querySelector(".muted");
+      if(m) m.textContent = `Linha ${i+1}`;
+    });
+  }
+
+  function readRow(rowEl){
+    const qtd = num(rowEl.querySelector('input[data-k="qtd"]').value.trim());
+    const item = rowEl.querySelector('select[data-k="item"]').value;
+    const pot = num(rowEl.querySelector('input[data-k="pot"]').value.trim());
+    const tempo = num(rowEl.querySelector('input[data-k="tempo"]').value.trim());
+    const surto = num(rowEl.querySelector('input[data-k="surto"]').value.trim());
+
+    return { qtd, item, pot, tempo, surto };
+  }
+
+  function isValidRow(d){
+    // regra: todos obrigatórios
+    if (!Number.isFinite(d.qtd) || d.qtd <= 0 || Math.floor(d.qtd) !== d.qtd) return false;
+    if (!d.item) return false;
+    if (!Number.isFinite(d.pot) || d.pot < 0) return false;
+    if (!Number.isFinite(d.tempo) || d.tempo < 0) return false;
+    if (!Number.isFinite(d.surto) || d.surto <= 0) return false;
+    return true;
+  }
+
+  function lastRowIsValid(){
+    const rows = getRows();
+    if(rows.length === 0) return true;
+    const d = readRow(rows[rows.length-1]);
+    return isValidRow(d);
+  }
+
+  function addRow(){
+    const rows = getRows();
+    const idx = rows.length;
+    const row = makeRow(idx);
+    cargasEl.appendChild(row);
+    // default: item 1º preset
+    row.querySelector('select[data-k="item"]').value = presets[0].id;
+    applyPreset(row, presets[0].id);
+    showMsg("");
+  }
+
+  function calc(){
+    showMsg("");
+    const rows = getRows();
+    const valid = [];
+    for (let i=0;i<rows.length;i++){
+      const d = readRow(rows[i]);
+      if (!isValidRow(d)){
+        showMsg(`Linha ${i+1} inválida. Preencha: quantidade (inteiro ≥1), item, potência (≥0), tempo (≥0), surto (>0).`);
+        $("resultado").style.display = "none";
         return;
       }
+      const itemLabel = (presets.find(p=>p.id===d.item)||{label:d.item}).label;
+      const wh = d.qtd * d.pot * d.tempo;
+      const pico = d.qtd * d.pot * d.surto;
+      valid.push({ ...d, itemLabel, wh, pico });
+    }
 
-      const texto =
-`Vendedor: ${vendedor}
-Código: ${codigo}
+    const tb = $("tb");
+    tb.innerHTML = "";
+    let totWh = 0, totPico = 0;
 
-Status: OK
-Observação: este é só um teste de tela/print.`;
-
-      $("resumo").textContent = texto;
-      $("saida").style.display = "block";
-      $("saida").scrollIntoView({behavior:"smooth"});
+    valid.forEach((d, i) => {
+      totWh += d.wh;
+      totPico += d.pico;
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>${d.itemLabel}</td>
+        <td class="right">${d.qtd}</td>
+        <td class="right">${d.pot.toFixed(2).replace(".", ",")}</td>
+        <td class="right">${d.tempo.toFixed(2).replace(".", ",")}</td>
+        <td class="right">${d.surto.toFixed(2).replace(".", ",")}</td>
+        <td class="right">${d.wh.toFixed(2).replace(".", ",")}</td>
+        <td class="right">${d.pico.toFixed(2).replace(".", ",")}</td>
+      `;
+      tb.appendChild(tr);
     });
-  </script>
+
+    $("totWh").textContent = totWh.toFixed(2).replace(".", ",");
+    $("totPico").textContent = totPico.toFixed(2).replace(".", ",");
+    $("tagStatus").textContent = "OK";
+    $("resultado").style.display = "block";
+    $("resultado").scrollIntoView({behavior:"smooth"});
+  }
+
+  $("btnAdd").addEventListener("click", () => {
+    if (!lastRowIsValid()){
+      showMsg("Preencha corretamente a última linha antes de adicionar outra.");
+      return;
+    }
+    addRow();
+  });
+
+  $("btnCalc").addEventListener("click", calc);
+
+  $("btnLimpar").addEventListener("click", () => {
+    cargasEl.innerHTML = "";
+    $("resultado").style.display = "none";
+    showMsg("");
+    addRow();
+  });
+
+  $("btnPrint").addEventListener("click", () => window.print());
+
+  // init
+  addRow();
+</script>
 </body>
 </html>
