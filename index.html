@@ -1,1 +1,69 @@
-teste teste
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teste de Estudo</title>
+  <style>
+    body{font-family:Arial, sans-serif; margin:24px; max-width:900px}
+    h1{margin:0 0 16px}
+    .card{border:1px solid #ddd; border-radius:10px; padding:16px; margin:12px 0}
+    label{display:block; font-size:14px; margin:10px 0 6px}
+    input{width:100%; padding:10px; font-size:16px; border:1px solid #ccc; border-radius:8px}
+    button{margin-top:14px; padding:10px 14px; font-size:16px; border:0; border-radius:8px; cursor:pointer}
+    .muted{color:#666; font-size:13px}
+    .result{white-space:pre-wrap; background:#f7f7f7}
+    @media print{
+      .no-print{display:none !important}
+      body{margin:0}
+      .card{border:0; padding:0}
+      .result{background:#fff}
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print">
+    <h1>Teste de Estudo</h1>
+    <div class="card">
+      <label for="vendedor">Vendedor</label>
+      <input id="vendedor" placeholder="ex.: NS0001" />
+
+      <label for="codigo">Código do estudo</label>
+      <input id="codigo" placeholder="ex.: 250203120501_NS0001_CLIENTE" />
+
+      <button id="btn">Gerar</button>
+      <div class="muted">Dica: depois de gerar, use Ctrl+P para imprimir.</div>
+    </div>
+  </div>
+
+  <div id="saida" class="card" style="display:none">
+    <h2>Resultado (mock)</h2>
+    <div id="resumo" class="result card"></div>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    $("btn").addEventListener("click", () => {
+      const vendedor = $("vendedor").value.trim();
+      const codigo = $("codigo").value.trim();
+
+      if (!vendedor || !codigo) {
+        alert("Preencha Vendedor e Código.");
+        return;
+      }
+
+      const texto =
+`Vendedor: ${vendedor}
+Código: ${codigo}
+
+Status: OK
+Observação: este é só um teste de tela/print.`;
+
+      $("resumo").textContent = texto;
+      $("saida").style.display = "block";
+      $("saida").scrollIntoView({behavior:"smooth"});
+    });
+  </script>
+</body>
+</html>
