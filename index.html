@@ -1,298 +1,747 @@
 <!doctype html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Teste - Cargas</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Calculadora de Escolha de Estações de Energia Pecron</title>
   <style>
-    body{font-family:Arial,sans-serif;margin:24px;max-width:1000px}
-    h1{margin:0 0 12px}
-    .card{border:1px solid #ddd;border-radius:10px;padding:16px;margin:12px 0}
-    .row{display:grid;grid-template-columns: 110px 220px 120px 120px 110px 110px;gap:10px;align-items:end}
-    label{display:block;font-size:12px;color:#444;margin:6px 0}
-    input,select{width:100%;padding:9px;font-size:14px;border:1px solid #ccc;border-radius:8px}
-    button{padding:10px 12px;font-size:14px;border:0;border-radius:8px;cursor:pointer}
-    .btns{display:flex;gap:10px;flex-wrap:wrap}
-    .muted{color:#666;font-size:12px}
-    .err{color:#b00020;font-size:12px;margin-top:8px}
-    table{width:100%;border-collapse:collapse}
-    th,td{border-bottom:1px solid #eee;padding:8px;text-align:left;font-size:14px}
-    .right{text-align:right}
-    .pill{display:inline-block;padding:3px 8px;border-radius:999px;background:#f2f2f2;font-size:12px}
-    @media print{
-      .no-print{display:none !important}
-      body{margin:0}
-      .card{border:0;padding:0}
-      th,td{border-bottom:1px solid #ddd}
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --card2:#fafafa;
+      --text:#0f172a;
+      --muted:#475569;
+      --line:#e5e7eb;
+
+      --yellow:#f6c34b;
+      --yellow2:#fff3cd;
+
+      --ok:#16a34a;
+      --bad:#dc2626;
+      --blue:#2563eb;
+
+      --btn:#111827;
+      --btnText:#ffffff;
+
+      --needBg:#fff3cd;
+      --needLine:#f6c34b;
     }
+
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    .wrap{max-width:1100px;margin:22px auto;padding:0 14px}
+
+    .hero{
+      border-radius:16px;
+      background:linear-gradient(180deg, var(--yellow2), rgba(255,243,205,0));
+      border:1px solid rgba(246,195,75,.45);
+      padding:14px 14px 10px;
+      margin-bottom:12px;
+    }
+    .hero h1{font-size:18px;margin:0}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      box-shadow:0 2px 10px rgba(15,23,42,.04);
+    }
+
+    .sectionTitle{
+      font-weight:900;
+      margin:0 0 10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .sectionTitle:after{
+      content:"";
+      height:3px;
+      flex:1;
+      border-radius:99px;
+      background:linear-gradient(90deg, var(--yellow), rgba(246,195,75,0));
+    }
+
+    .muted{color:var(--muted)}
+    select,input{
+      background:#fff;border:1px solid var(--line);color:var(--text);
+      border-radius:10px;padding:10px
+    }
+    .hr{height:1px;background:var(--line);margin:12px 0}
+
+    .tableWrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
+    .table{width:100%;border-collapse:separate;border-spacing:0;background:#fff}
+    .table thead th{
+      background:var(--card2);
+      border-bottom:1px solid var(--line);
+      text-align:left;color:var(--muted);font-weight:800;font-size:12px;
+      padding:10px;
+      position:sticky;top:0;
+    }
+    .table td{
+      padding:10px;border-bottom:1px solid var(--line);vertical-align:middle
+    }
+    .table td.right{text-align:right}
+    .table tr:last-child td{border-bottom:none}
+
+    .btn{
+      background:var(--btn);border:1px solid var(--btn);
+      color:var(--btnText);border-radius:12px;padding:10px 12px;cursor:pointer
+    }
+    .btn:hover{filter:brightness(.95)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+
+    .iconBtn{
+      width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
+      background:#fff;cursor:pointer;color:var(--text)
+    }
+    .iconBtn:hover{background:var(--card2)}
+    .iconBtn:disabled{opacity:.40;cursor:not-allowed}
+
+    .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    @media (min-width:920px){.totals{grid-template-columns:repeat(4,1fr)}}
+
+    .kpi{
+      background:linear-gradient(180deg, rgba(246,195,75,.10), rgba(246,195,75,0));
+      border:1px solid rgba(246,195,75,.35);
+      border-radius:14px;
+      padding:10px
+    }
+    .kpi .t{color:var(--muted);font-weight:700;font-size:12px}
+    .kpi .v{font-size:18px;font-weight:900;margin-top:2px}
+
+    .cfg{
+      background:#eef2f7;
+      border:1px solid var(--line);
+      border-radius:14px;padding:10px
+    }
+    .cfg .title{color:var(--muted);font-size:12px;font-weight:800}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
+      border-radius:999px;padding:8px 10px;background:#fff
+    }
+
+    .msg{margin-top:10px;padding:10px;border-radius:14px;border:1px solid var(--line);background:#fff}
+    .msg.bad{border-color:rgba(220,38,38,.28)}
+    .msg.ok{border-color:rgba(22,163,74,.28)}
+
+    .cards{display:grid;grid-template-columns:1fr;gap:10px}
+    @media (min-width:720px){.cards{grid-template-columns:repeat(3,1fr)}}
+    .mcard{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}
+    .mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+    .tag{font-size:12px;font-weight:900;padding:4px 8px;border-radius:999px;border:1px solid var(--line)}
+    .tag.rec{color:var(--ok);border-color:rgba(22,163,74,.25);background:rgba(22,163,74,.07)}
+    .tag.ok{color:var(--blue);border-color:rgba(37,99,235,.25);background:rgba(37,99,235,.07)}
+    .tag.bad{color:var(--bad);border-color:rgba(220,38,38,.25);background:rgba(220,38,38,.07)}
+    .small{font-size:12px}
+    ul{margin:8px 0 0 18px;padding:0}
+
+    /* campos que precisam preencher */
+    .need{
+      background:var(--needBg)!important;
+      border-color:var(--needLine)!important;
+      box-shadow:0 0 0 3px rgba(246,195,75,.20)
+    }
+
+    /* relatório (card separado no final) */
+    .reportKpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+    .rkpi{
+      background:#fff;
+      border:1px solid rgba(246,195,75,.35);
+      border-radius:14px;
+      padding:10px;
+    }
+    .rkpi .t{color:var(--muted);font-weight:800;font-size:12px}
+    .rkpi .v{font-size:18px;font-weight:900;margin-top:2px}
+    .rtableWrap{
+      margin-top:10px;
+      overflow:auto;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:14px;
+      background:#fff;
+    }
+    .rtable{width:100%;border-collapse:separate;border-spacing:0}
+    .rtable th,.rtable td{padding:10px;border-bottom:1px solid rgba(15,23,42,.08);font-size:12px}
+    .rtable th{color:var(--muted);font-weight:900;background:#fbfbfb;text-align:left}
+    .rtable td.right{text-align:right}
+    .rtable tr:last-child td{border-bottom:none}
   </style>
 </head>
 <body>
-  <div class="no-print">
-    <h1>Teste - Cargas</h1>
-    <div class="muted">Regra: só adiciona nova linha se a última estiver válida. Preset preenche potência/tempo/surto; quantidade é manual.</div>
+<div class="wrap">
+  <div class="hero">
+    <h1>Calculadora de Escolha de Estações de Energia Pecron</h1>
   </div>
 
-  <div class="card no-print">
-    <div id="cargas"></div>
+  <!-- FERRAMENTA -->
+  <div class="card">
+    <div class="sectionTitle">Cargas</div>
 
-    <div class="btns" style="margin-top:14px">
-      <button id="btnAdd">Adicionar carga</button>
-      <button id="btnCalc">Calcular</button>
-      <button id="btnLimpar">Limpar</button>
-      <button id="btnPrint">Imprimir (Ctrl+P)</button>
-    </div>
-
-    <div id="msg" class="err" style="display:none"></div>
-  </div>
-
-  <div id="resultado" class="card" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
-      <h2 style="margin:0">Resultado</h2>
-      <span class="pill" id="tagStatus">OK</span>
-    </div>
-
-    <div style="margin-top:10px" class="muted">
-      Energia diária (Wh/dia) = quantidade × potência(W) × tempo(h/dia) • Pico (W) = quantidade × potência(W) × surto(x)
-    </div>
-
-    <div style="margin-top:12px;overflow:auto">
-      <table>
+    <div class="tableWrap">
+      <table class="table">
         <thead>
           <tr>
-            <th>#</th>
-            <th>Item</th>
-            <th class="right">Qtd</th>
+            <th style="min-width:280px">Carga</th>
             <th class="right">Potência (W)</th>
-            <th class="right">Tempo (h/dia)</th>
-            <th class="right">Surto (x)</th>
-            <th class="right">Energia (Wh/dia)</th>
+            <th class="right">Qtd</th>
+            <th class="right">Tempo (h)</th>
+            <th class="right">Consumo (Wh)</th>
+            <th class="right">Pico total (W)</th>
+            <th class="right">Ação</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="totals">
+      <div class="kpi">
+        <div class="t">Potência total</div>
+        <div class="v" id="kpiW">0 W</div>
+      </div>
+      <div class="kpi">
+        <div class="t">Consumo total</div>
+        <div class="v" id="kpiWh">0 Wh</div>
+      </div>
+      <div class="kpi">
+        <div class="t">Potência pico total</div>
+        <div class="v" id="kpiPk">0 W</div>
+      </div>
+
+      <div class="cfg">
+        <div class="title">Uso</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+          <label class="pill" style="margin:0;cursor:pointer">
+            <input type="radio" name="modo" value="S" checked>
+            <span><b>Uso esporádico</b> <span class="muted small">(DoD 90%)</span></span>
+          </label>
+          <label class="pill" style="margin:0;cursor:pointer">
+            <input type="radio" name="modo" value="D">
+            <span><b>Uso diário</b> <span class="muted small">(DoD 80%)</span></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div id="msg" class="msg" style="display:none"></div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+      <button id="btnCalc" class="btn">Calcular</button>
+    </div>
+  </div>
+
+  <!-- RELATÓRIO (NO FINAL, ANTES DOS CARDS) -->
+  <div id="reportCard" class="card" style="margin-top:12px;display:none">
+    <div class="sectionTitle">Relatório do cálculo</div>
+    <div class="muted" id="reportMeta" style="font-size:12px"></div>
+
+    <div class="reportKpis">
+      <div class="rkpi">
+        <div class="t">Potência total</div>
+        <div class="v" id="rTotW">0 W</div>
+      </div>
+      <div class="rkpi">
+        <div class="t">Consumo total</div>
+        <div class="v" id="rTotWh">0 Wh</div>
+      </div>
+      <div class="rkpi">
+        <div class="t">Potência pico total</div>
+        <div class="v" id="rTotPk">0 W</div>
+      </div>
+    </div>
+
+    <div class="rtableWrap">
+      <table class="rtable">
+        <thead>
+          <tr>
+            <th>Carga</th>
+            <th class="right">Potência (W)</th>
+            <th class="right">Qtd</th>
+            <th class="right">Tempo (h)</th>
+            <th class="right">Consumo (Wh)</th>
             <th class="right">Pico (W)</th>
           </tr>
         </thead>
-        <tbody id="tb"></tbody>
-        <tfoot>
-          <tr>
-            <th colspan="6" class="right">Totais</th>
-            <th class="right" id="totWh">0</th>
-            <th class="right" id="totPico">0</th>
-          </tr>
-        </tfoot>
+        <tbody id="reportBody"></tbody>
       </table>
     </div>
   </div>
 
+  <!-- MODELOS -->
+  <div id="modelsSection" class="card" style="margin-top:12px;display:none">
+    <div class="sectionTitle">Modelos compatíveis</div>
+    <div class="cards" id="cards"></div>
+  </div>
+</div>
+
 <script>
-  const presets = [
-    { id:"lampada_led", label:"Lâmpada LED", potencia:9,   tempo:5, surto:1.0 },
-    { id:"tv",         label:"TV",          potencia:100, tempo:4, surto:1.2 },
-    { id:"celular",    label:"Carregador de celular", potencia:10, tempo:2, surto:1.0 },
-    { id:"geladeira",  label:"Geladeira",   potencia:150, tempo:8, surto:3.0 },
-    { id:"bomba",      label:"Bomba d'água",potencia:500, tempo:1, surto:3.0 },
-    { id:"outro",      label:"Outro (manual)", potencia:null, tempo:null, surto:null }
-  ];
+const PRESETS = [
+  {name:'Lâmpada LED 9W', power:9, pico:1},
+  {name:'Celular', power:30, pico:1},
+  {name:'Notebook', power:60, pico:1},
+  {name:'Drone', power:40, pico:1},
+  {name:'Projetor', power:65, pico:1},
+  {name:'Som', power:50, pico:1},
+  {name:'Roteador e Modem', power:20, pico:1},
+  {name:'Starlink Mini', power:24, pico:1},
+  {name:'Ventilador', power:80, pico:4},
+  {name:'Geladeira 300L', power:120, pico:5},
+  {name:'Geladeira 350L', power:180, pico:5},
+  {name:'Freezer 300L', power:180, pico:5},
+  {name:'Geladeria Portátil 30L', power:45, pico:5},
+  {name:'Geladeria Portátil 50L', power:70, pico:5},
+  {name:"TV LED 42'", power:120, pico:1},
+];
 
-  const $ = (id) => document.getElementById(id);
-  const cargasEl = $("cargas");
-  const msgEl = $("msg");
+const MODELOS = [
+  {name:'P500', V:12.8, Ah:36, eff:0.85, contW:500, peakW:700},
+  {name:'E1000', V:51.2, Ah:20, eff:0.85, contW:1800, peakW:3000},
+  {name:'E2400', V:51.2, Ah:40, eff:0.85, contW:2400, peakW:4000},
+];
 
-  function showMsg(t){
-    msgEl.textContent = t;
-    msgEl.style.display = t ? "block" : "none";
+const DoD = { S: 0.9, D: 0.8 };
+
+const tbody = document.getElementById('tbody');
+const btnCalc = document.getElementById('btnCalc');
+const cards = document.getElementById('cards');
+const modelsSection = document.getElementById('modelsSection');
+
+const kpiW = document.getElementById('kpiW');
+const kpiWh = document.getElementById('kpiWh');
+const kpiPk = document.getElementById('kpiPk');
+const msg = document.getElementById('msg');
+
+const reportCard = document.getElementById('reportCard');
+const reportBody = document.getElementById('reportBody');
+const reportMeta = document.getElementById('reportMeta');
+const rTotW = document.getElementById('rTotW');
+const rTotWh = document.getElementById('rTotWh');
+const rTotPk = document.getElementById('rTotPk');
+
+function fmt(n, dec=0){
+  if (!isFinite(n)) return '—';
+  return n.toLocaleString('pt-BR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+function getModo(){ return document.querySelector('input[name="modo"]:checked').value; }
+function showMsg(text, kind='bad'){
+  msg.textContent = text;
+  msg.className = 'msg ' + (kind === 'ok' ? 'ok' : 'bad');
+  msg.style.display = 'block';
+}
+function hideMsg(){ msg.style.display = 'none'; msg.textContent = ''; }
+
+function parseHorasBR(v){
+  if (!v) return 0;
+  const raw = String(v).trim();
+  const s = raw.includes(',') ? raw.replace(/\./g,'').replace(',', '.') : raw;
+  const n = parseFloat(s);
+  return isFinite(n) && n > 0 ? n : 0;
+}
+function formatHorasBR(hours, dec=2){
+  if (!isFinite(hours)) return '';
+  let s = hours.toFixed(dec).replace('.', ',');
+  s = s.replace(/,?0+$/,'').replace(/,$/,',0');
+  return (s === '0' || s === '0,0') ? '' : s;
+}
+function parseQtd(v){
+  if (!v) return 0;
+  const s = String(v).trim().replace(/\D+/g,'');
+  const n = parseInt(s || '0', 10);
+  return isFinite(n) && n > 0 ? n : 0;
+}
+function floor5MinutesFromHours(hours){
+  const mins = Math.floor(Math.max(0, hours) * 60);
+  return Math.floor(mins / 5) * 5; // sempre pra baixo
+}
+function floor5Minutes(mins){
+  mins = Math.floor(Math.max(0, mins));
+  return Math.floor(mins / 5) * 5; // sempre pra baixo
+}
+
+function buildPresetSelect(el){
+  el.innerHTML = '';
+  const opt0 = document.createElement('option');
+  opt0.value = '';
+  opt0.textContent = 'Selecione...';
+  el.appendChild(opt0);
+
+  for (let i=0;i<PRESETS.length;i++){
+    const p = PRESETS[i];
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = p.name;
+    el.appendChild(opt);
   }
+}
 
-  function num(v){
-    const x = Number(String(v).replace(",", "."));
-    return Number.isFinite(x) ? x : NaN;
-  }
+function rowIsValid(tr){
+  const idxStr = tr.querySelector('.cargaSel').value;
+  const qty = parseQtd(tr.querySelector('.qty').value || '');
+  const horas = parseHorasBR(tr.querySelector('.horas').value || '');
+  return idxStr !== '' && qty > 0 && horas > 0;
+}
 
-  function makeRow(index){
-    const wrap = document.createElement("div");
-    wrap.className = "card";
-    wrap.dataset.idx = index;
+function refreshNeedHighlight(tr){
+  const sel = tr.querySelector('.cargaSel');
+  const qtyEl = tr.querySelector('.qty');
+  const hEl = tr.querySelector('.horas');
 
-    wrap.innerHTML = `
-      <div class="row">
-        <div>
-          <label>Qtd</label>
-          <input inputmode="numeric" placeholder="1" data-k="qtd">
-        </div>
+  const hasCarga = (sel.value !== '');
+  const qty = parseQtd(qtyEl.value || '');
+  const horas = parseHorasBR(hEl.value || '');
 
-        <div>
-          <label>Item</label>
-          <select data-k="item"></select>
-        </div>
+  if (!hasCarga) sel.classList.add('need'); else sel.classList.remove('need');
+  if (qty <= 0) qtyEl.classList.add('need'); else qtyEl.classList.remove('need');
+  if (horas <= 0) hEl.classList.add('need'); else hEl.classList.remove('need');
+}
 
-        <div>
-          <label>Potência (W)</label>
-          <input inputmode="decimal" placeholder="ex.: 100" data-k="pot">
-        </div>
+function updateActionButtons(){
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.forEach((tr, idx) => {
+    const plus = tr.querySelector('.btnPlus');
+    const isLast = idx === rows.length - 1;
+    plus.style.visibility = isLast ? 'visible' : 'hidden';
+    plus.disabled = !(isLast && rowIsValid(tr));
+  });
+}
 
-        <div>
-          <label>Tempo (h/dia)</label>
-          <input inputmode="decimal" placeholder="ex.: 4" data-k="tempo">
-        </div>
+function recalcPreviewTotals(){
+  let totW = 0, totWh = 0, totPk = 0;
 
-        <div>
-          <label>Surto (x)</label>
-          <input inputmode="decimal" placeholder="ex.: 3" data-k="surto">
-        </div>
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  for (const tr of rows){
+    const idxStr = tr.querySelector('.cargaSel').value;
+    const p = idxStr === '' ? null : PRESETS[parseInt(idxStr,10)];
+    const qty = parseQtd(tr.querySelector('.qty').value || '');
+    const horas = parseHorasBR(tr.querySelector('.horas').value || '');
 
-        <div>
-          <label>&nbsp;</label>
-          <button data-k="rem">Remover</button>
-        </div>
-      </div>
-      <div class="muted" style="margin-top:8px">Linha ${index+1}</div>
-    `;
+    refreshNeedHighlight(tr);
 
-    const sel = wrap.querySelector('select[data-k="item"]');
-    presets.forEach(p => {
-      const opt = document.createElement("option");
-      opt.value = p.id;
-      opt.textContent = p.label;
-      sel.appendChild(opt);
-    });
-
-    sel.addEventListener("change", () => applyPreset(wrap, sel.value));
-    wrap.querySelector('button[data-k="rem"]').addEventListener("click", () => {
-      wrap.remove();
-      renumber();
-      showMsg("");
-    });
-
-    return wrap;
-  }
-
-  function applyPreset(rowEl, presetId){
-    const p = presets.find(x => x.id === presetId);
-    if(!p) return;
-
-    const pot = rowEl.querySelector('input[data-k="pot"]');
-    const tempo = rowEl.querySelector('input[data-k="tempo"]');
-    const surto = rowEl.querySelector('input[data-k="surto"]');
-
-    if (p.potencia != null) pot.value = String(p.potencia);
-    if (p.tempo != null) tempo.value = String(p.tempo);
-    if (p.surto != null) surto.value = String(p.surto);
-  }
-
-  function getRows(){
-    return Array.from(cargasEl.querySelectorAll('[data-idx]'));
-  }
-
-  function renumber(){
-    getRows().forEach((r, i) => {
-      r.dataset.idx = i;
-      const m = r.querySelector(".muted");
-      if(m) m.textContent = `Linha ${i+1}`;
-    });
-  }
-
-  function readRow(rowEl){
-    const qtd = num(rowEl.querySelector('input[data-k="qtd"]').value.trim());
-    const item = rowEl.querySelector('select[data-k="item"]').value;
-    const pot = num(rowEl.querySelector('input[data-k="pot"]').value.trim());
-    const tempo = num(rowEl.querySelector('input[data-k="tempo"]').value.trim());
-    const surto = num(rowEl.querySelector('input[data-k="surto"]').value.trim());
-
-    return { qtd, item, pot, tempo, surto };
-  }
-
-  function isValidRow(d){
-    // regra: todos obrigatórios
-    if (!Number.isFinite(d.qtd) || d.qtd <= 0 || Math.floor(d.qtd) !== d.qtd) return false;
-    if (!d.item) return false;
-    if (!Number.isFinite(d.pot) || d.pot < 0) return false;
-    if (!Number.isFinite(d.tempo) || d.tempo < 0) return false;
-    if (!Number.isFinite(d.surto) || d.surto <= 0) return false;
-    return true;
-  }
-
-  function lastRowIsValid(){
-    const rows = getRows();
-    if(rows.length === 0) return true;
-    const d = readRow(rows[rows.length-1]);
-    return isValidRow(d);
-  }
-
-  function addRow(){
-    const rows = getRows();
-    const idx = rows.length;
-    const row = makeRow(idx);
-    cargasEl.appendChild(row);
-    // default: item 1º preset
-    row.querySelector('select[data-k="item"]').value = presets[0].id;
-    applyPreset(row, presets[0].id);
-    showMsg("");
-  }
-
-  function calc(){
-    showMsg("");
-    const rows = getRows();
-    const valid = [];
-    for (let i=0;i<rows.length;i++){
-      const d = readRow(rows[i]);
-      if (!isValidRow(d)){
-        showMsg(`Linha ${i+1} inválida. Preencha: quantidade (inteiro ≥1), item, potência (≥0), tempo (≥0), surto (>0).`);
-        $("resultado").style.display = "none";
-        return;
-      }
-      const itemLabel = (presets.find(p=>p.id===d.item)||{label:d.item}).label;
-      const wh = d.qtd * d.pot * d.tempo;
-      const pico = d.qtd * d.pot * d.surto;
-      valid.push({ ...d, itemLabel, wh, pico });
+    if (!p){
+      tr.querySelector('.pot').textContent = '0';
+      tr.querySelector('.consumo').textContent = '0';
+      tr.querySelector('.picoTot').textContent = '0';
+      continue;
     }
 
-    const tb = $("tb");
-    tb.innerHTML = "";
-    let totWh = 0, totPico = 0;
+    tr.querySelector('.pot').textContent = fmt(p.power,0);
 
-    valid.forEach((d, i) => {
-      totWh += d.wh;
-      totPico += d.pico;
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${i+1}</td>
-        <td>${d.itemLabel}</td>
-        <td class="right">${d.qtd}</td>
-        <td class="right">${d.pot.toFixed(2).replace(".", ",")}</td>
-        <td class="right">${d.tempo.toFixed(2).replace(".", ",")}</td>
-        <td class="right">${d.surto.toFixed(2).replace(".", ",")}</td>
-        <td class="right">${d.wh.toFixed(2).replace(".", ",")}</td>
-        <td class="right">${d.pico.toFixed(2).replace(".", ",")}</td>
-      `;
-      tb.appendChild(tr);
-    });
+    if (qty <= 0 || horas <= 0){
+      tr.querySelector('.consumo').textContent = '0';
+      tr.querySelector('.picoTot').textContent = '0';
+      continue;
+    }
 
-    $("totWh").textContent = totWh.toFixed(2).replace(".", ",");
-    $("totPico").textContent = totPico.toFixed(2).replace(".", ",");
-    $("tagStatus").textContent = "OK";
-    $("resultado").style.display = "block";
-    $("resultado").scrollIntoView({behavior:"smooth"});
+    const mins = floor5MinutesFromHours(horas);
+    const horasAdj = mins / 60;
+
+    const w = p.power * qty;
+    const wh = w * horasAdj;
+    const pk = w * p.pico;
+
+    tr.querySelector('.consumo').textContent = fmt(wh,0);
+    tr.querySelector('.picoTot').textContent = fmt(pk,0);
+
+    totW += w; totWh += wh; totPk += pk;
   }
 
-  $("btnAdd").addEventListener("click", () => {
-    if (!lastRowIsValid()){
-      showMsg("Preencha corretamente a última linha antes de adicionar outra.");
+  kpiW.textContent = `${fmt(totW,0)} W`;
+  kpiWh.textContent = `${fmt(totWh,0)} Wh`;
+  kpiPk.textContent = `${fmt(totPk,0)} W`;
+
+  updateActionButtons();
+}
+
+function makeRowBlank(){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><select class="cargaSel need" style="width:100%"></select></td>
+    <td class="right"><span class="pot">0</span></td>
+    <td class="right"><input class="qty need" type="text" inputmode="numeric" value=""></td>
+    <td class="right"><input class="horas need" type="text" inputmode="decimal" value=""></td>
+    <td class="right"><span class="consumo">0</span></td>
+    <td class="right"><span class="picoTot">0</span></td>
+    <td class="right" style="white-space:nowrap">
+      <button class="iconBtn btnPlus" title="Adicionar nova linha">＋</button>
+      <button class="iconBtn btnDel" title="Remover linha">🗑</button>
+    </td>
+  `;
+
+  const sel = tr.querySelector('.cargaSel');
+  const qty = tr.querySelector('.qty');
+  const horas = tr.querySelector('.horas');
+  const btnPlus = tr.querySelector('.btnPlus');
+  const btnDel = tr.querySelector('.btnDel');
+
+  buildPresetSelect(sel);
+
+  sel.addEventListener('change', () => { hideMsg(); recalcPreviewTotals(); });
+
+  qty.addEventListener('input', () => {
+    hideMsg();
+    const cleaned = String(qty.value || '').replace(/\D+/g,'');
+    if (qty.value !== cleaned) qty.value = cleaned;
+    recalcPreviewTotals();
+  });
+
+  horas.addEventListener('input', () => {
+    hideMsg();
+    const cleaned = String(horas.value || '').replace(/[^0-9,\.]/g,'');
+    if (horas.value !== cleaned) horas.value = cleaned;
+    recalcPreviewTotals();
+  });
+
+  horas.addEventListener('blur', () => {
+    const h = parseHorasBR(horas.value || '');
+    const mins = floor5MinutesFromHours(h);
+    const hAdj = mins / 60;
+    horas.value = hAdj > 0 ? formatHorasBR(hAdj, 2) : '';
+    hideMsg();
+    recalcPreviewTotals();
+  });
+
+  btnPlus.addEventListener('click', () => {
+    hideMsg();
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    if (rows[rows.length - 1] !== tr) return;
+    if (!rowIsValid(tr)){
+      showMsg('Preencha carga, Qtd e Tempo (h) antes de adicionar nova linha.');
       return;
     }
-    addRow();
+    tbody.appendChild(makeRowBlank());
+    recalcPreviewTotals();
   });
 
-  $("btnCalc").addEventListener("click", calc);
-
-  $("btnLimpar").addEventListener("click", () => {
-    cargasEl.innerHTML = "";
-    $("resultado").style.display = "none";
-    showMsg("");
-    addRow();
+  btnDel.addEventListener('click', () => {
+    tr.remove();
+    hideMsg();
+    recalcPreviewTotals();
+    modelsSection.style.display = 'none';
+    cards.innerHTML = '';
+    if (tbody.querySelectorAll('tr').length === 0){
+      tbody.appendChild(makeRowBlank());
+      recalcPreviewTotals();
+    }
   });
 
-  $("btnPrint").addEventListener("click", () => window.print());
+  return tr;
+}
 
-  // init
-  addRow();
+function collectRowsValidated(){
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  const items = [];
+
+  for (let i=0;i<rows.length;i++){
+    const tr = rows[i];
+    const idxStr = tr.querySelector('.cargaSel').value;
+    const qty = parseQtd(tr.querySelector('.qty').value || '');
+    const h = parseHorasBR(tr.querySelector('.horas').value || '');
+
+    const isBlank = (idxStr === '' && qty <= 0 && h <= 0);
+    const isValid = (idxStr !== '' && qty > 0 && h > 0);
+    const isPartial = !isBlank && !isValid;
+
+    if (isPartial) return { ok:false, error:`Linha ${i+1} incompleta: selecione a carga e preencha Qtd e Tempo (h).` };
+
+    if (isBlank){
+      for (let j=i+1;j<rows.length;j++){
+        const tr2 = rows[j];
+        const idx2 = tr2.querySelector('.cargaSel').value;
+        const q2 = parseQtd(tr2.querySelector('.qty').value || '');
+        const h2 = parseHorasBR(tr2.querySelector('.horas').value || '');
+        if (idx2 !== '' || q2 > 0 || h2 > 0) return { ok:false, error:`Há uma linha preenchida após uma linha em branco (linha ${j+1}).` };
+      }
+      break;
+    }
+
+    const p = PRESETS[parseInt(idxStr,10)];
+    const mins = floor5MinutesFromHours(h);
+    const horasAdj = mins / 60;
+
+    tr.querySelector('.horas').value = horasAdj > 0 ? formatHorasBR(horasAdj, 2) : '';
+    tr.querySelector('.qty').value = String(qty);
+
+    const w = p.power * qty;
+    const wh = w * horasAdj;
+    const pk = w * p.pico;
+
+    items.push({ name:p.name, power:p.power, pico:p.pico, qty, horas:horasAdj, w, wh, pk });
+  }
+
+  if (items.length === 0) return { ok:false, error:'Adicione ao menos uma carga.' };
+  return { ok:true, items };
+}
+
+function calcTotals(items){
+  let totW = 0, totWh = 0, totPk = 0;
+  for (const it of items){
+    totW += it.w;
+    totWh += it.wh;
+    totPk += it.pk;
+  }
+  return { totW, totWh, totPk };
+}
+
+function modelEnergyNominalWh(m){ return m.V * m.Ah; }
+function modelEnergyUsefulWh(m, modo){ return modelEnergyNominalWh(m) * m.eff * DoD[modo]; }
+
+function plural(n, s, p){ return n === 1 ? s : p; }
+
+function minutesToLongText(mins){
+  mins = floor5Minutes(mins);
+  const d = Math.floor(mins / (24*60));
+  mins -= d*24*60;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+
+  const parts = [];
+  if (d > 0) parts.push(`${d} ${plural(d,'dia','dias')}`);
+  if (h > 0) parts.push(`${h} ${plural(h,'hora','horas')}`);
+  parts.push(`${m} ${plural(m,'minuto','minutos')}`);
+
+  if (parts.length === 1) return parts[0];
+  if (parts.length === 2) return parts[0] + ' e ' + parts[1];
+  return parts[0] + ' ' + parts[1] + ' e ' + parts[2];
+}
+
+function renderReport(items, totals){
+  reportBody.innerHTML = '';
+  for (const it of items){
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${it.name}</td>
+      <td class="right">${fmt(it.power,0)}</td>
+      <td class="right">${fmt(it.qty,0)}</td>
+      <td class="right">${fmt(it.horas,2)}</td>
+      <td class="right">${fmt(it.wh,0)}</td>
+      <td class="right">${fmt(it.pk,0)}</td>
+    `;
+    reportBody.appendChild(tr);
+  }
+
+  const now = new Date();
+  reportMeta.textContent = `Gerado em ${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
+
+  rTotW.textContent = `${fmt(totals.totW,0)} W`;
+  rTotWh.textContent = `${fmt(totals.totWh,0)} Wh`;
+  rTotPk.textContent = `${fmt(totals.totPk,0)} W`;
+
+  reportCard.style.display = 'block';
+}
+
+function renderCards(results){
+  cards.innerHTML = '';
+  for (const r of results){
+    const div = document.createElement('div');
+    div.className = 'mcard';
+    const tagClass = r.recommended ? 'rec' : (r.compat ? 'ok' : 'bad');
+    const tagText = r.recommended ? 'Recomendado' : (r.compat ? 'Compatível' : 'Não compatível');
+
+    div.innerHTML = `
+      <div class="mhead">
+        <div style="font-weight:900;font-size:14px">${r.name}</div>
+        <span class="tag ${tagClass}">${tagText}</span>
+      </div>
+      <div class="small muted">
+        Potência: ${fmt(r.contW,0)} W • Pico: ${fmt(r.peakW,0)} W • Energia: ${fmt(r.energyNominalWh,0)} Wh
+      </div>
+      <div class="small" style="margin-top:8px">
+        <div><span class="muted">Autonomia:</span> <b>${r.compat ? r.autonomyText : '—'}</b></div>
+      </div>
+    `;
+
+    if (!r.compat){
+      const ul = document.createElement('ul');
+      for (const reason of r.reasons){
+        const li = document.createElement('li');
+        li.textContent = reason;
+        ul.appendChild(li);
+      }
+      div.appendChild(ul);
+    }
+
+    cards.appendChild(div);
+  }
+}
+
+function resetInputsForNewCalc(){
+  tbody.innerHTML = '';
+  tbody.appendChild(makeRowBlank());
+  recalcPreviewTotals();
+}
+
+btnCalc.addEventListener('click', () => {
+  hideMsg();
+
+  const got = collectRowsValidated();
+  if (!got.ok){
+    showMsg(got.error, 'bad');
+    modelsSection.style.display = 'none';
+    cards.innerHTML = '';
+    return;
+  }
+
+  const modo = getModo();
+  const totals = calcTotals(got.items);
+
+  // relatório (no final)
+  renderReport(got.items, totals);
+
+  // calcula compatibilidade + autonomia (autonomia só se compatível)
+  const tmp = MODELOS.map(m => {
+    const energyNominalWh = modelEnergyNominalWh(m);
+    const energyUsefulWh = modelEnergyUsefulWh(m, modo);
+
+    const passW = totals.totW <= m.contW + 1e-9;
+    const passPk = totals.totPk <= m.peakW + 1e-9;
+    const passE = totals.totWh <= energyUsefulWh + 1e-9;
+
+    const compat = passW && passPk && passE;
+
+    const reasons = [];
+    if (!passW) reasons.push(`Excede potência em ${fmt(totals.totW - m.contW,0)} W`);
+    if (!passPk) reasons.push(`Excede pico em ${fmt(totals.totPk - m.peakW,0)} W`);
+    if (!passE) reasons.push(`Energia insuficiente: falta ${fmt(totals.totWh - energyUsefulWh,0)} Wh`);
+
+    let autonomyText = '';
+    if (compat){
+      const ratio = (totals.totWh > 0) ? (energyUsefulWh / totals.totWh) : Infinity;
+      const minutes = isFinite(ratio) ? (ratio * 24 * 60) : 999999999;
+      autonomyText = (totals.totWh <= 0) ? '∞' : minutesToLongText(minutes);
+    }
+
+    return { name:m.name, contW:m.contW, peakW:m.peakW, energyNominalWh, compat, reasons, autonomyText };
+  });
+
+  // recomenda sempre a menor compatível (menor energia nominal; desempate por potência contínua)
+  const compatibles = tmp.filter(x => x.compat);
+  let recommendedName = '';
+  if (compatibles.length){
+    compatibles.sort((a,b) => (a.energyNominalWh - b.energyNominalWh) || (a.contW - b.contW));
+    recommendedName = compatibles[0].name;
+  }
+
+  const results = tmp.map(x => ({...x, recommended: (x.compat && x.name === recommendedName)}));
+
+  modelsSection.style.display = 'block';
+  renderCards(results);
+
+  if (!results.some(r => r.compat)) showMsg('Nenhum modelo ficou compatível.', 'bad');
+  else showMsg('Cálculo concluído.', 'ok');
+
+  // limpa as cargas para novo cálculo
+  resetInputsForNewCalc();
+});
+
+function init(){
+  tbody.innerHTML = '';
+  tbody.appendChild(makeRowBlank());
+  recalcPreviewTotals();
+}
+init();
 </script>
 </body>
 </html>
