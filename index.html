@@ -29,13 +29,13 @@
 
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{max-width:1100px;margin:22px auto;padding:0 14px}
+    .wrap{max-width:1100px;margin:18px auto;padding:0 12px}
 
     .hero{
       border-radius:16px;
       background:linear-gradient(180deg, var(--yellow2), rgba(255,243,205,0));
       border:1px solid rgba(246,195,75,.45);
-      padding:14px 14px 10px;
+      padding:14px;
       margin-bottom:12px;
     }
     .hero h1{font-size:18px;margin:0}
@@ -66,35 +66,40 @@
     .muted{color:var(--muted)}
     select,input{
       background:#fff;border:1px solid var(--line);color:var(--text);
-      border-radius:10px;padding:10px
+      border-radius:12px;padding:12px;
+      min-height:44px; /* touch */
+      font-size:14px;
     }
     .hr{height:1px;background:var(--line);margin:12px 0}
 
-    .tableWrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
-    .table{width:100%;border-collapse:separate;border-spacing:0;background:#fff}
-    .table thead th{
+    .tableWrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+    table{width:100%;border-collapse:separate;border-spacing:0}
+    thead th{
       background:var(--card2);
       border-bottom:1px solid var(--line);
       text-align:left;color:var(--muted);font-weight:800;font-size:12px;
       padding:10px;
       position:sticky;top:0;
+      z-index:1;
+      white-space:nowrap;
     }
-    .table td{
+    td{
       padding:10px;border-bottom:1px solid var(--line);vertical-align:middle
     }
-    .table td.right{text-align:right}
-    .table tr:last-child td{border-bottom:none}
+    td.right{text-align:right}
+    tbody tr:last-child td{border-bottom:none}
 
     .btn{
       background:var(--btn);border:1px solid var(--btn);
-      color:var(--btnText);border-radius:12px;padding:10px 12px;cursor:pointer
+      color:var(--btnText);border-radius:12px;padding:12px 14px;
+      cursor:pointer;min-height:44px;font-weight:800
     }
     .btn:hover{filter:brightness(.95)}
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
     .iconBtn{
-      width:38px;height:38px;border-radius:10px;border:1px solid var(--line);
-      background:#fff;cursor:pointer;color:var(--text)
+      width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
+      background:#fff;cursor:pointer;color:var(--text);font-size:18px
     }
     .iconBtn:hover{background:var(--card2)}
     .iconBtn:disabled{opacity:.40;cursor:not-allowed}
@@ -108,7 +113,7 @@
       border-radius:14px;
       padding:10px
     }
-    .kpi .t{color:var(--muted);font-weight:700;font-size:12px}
+    .kpi .t{color:var(--muted);font-weight:800;font-size:12px}
     .kpi .v{font-size:18px;font-weight:900;margin-top:2px}
 
     .cfg{
@@ -116,10 +121,10 @@
       border:1px solid var(--line);
       border-radius:14px;padding:10px
     }
-    .cfg .title{color:var(--muted);font-size:12px;font-weight:800}
+    .cfg .title{color:var(--muted);font-size:12px;font-weight:900}
     .pill{
       display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
-      border-radius:999px;padding:8px 10px;background:#fff
+      border-radius:999px;padding:10px 12px;background:#fff;min-height:44px
     }
 
     .msg{margin-top:10px;padding:10px;border-radius:14px;border:1px solid var(--line);background:#fff}
@@ -130,21 +135,19 @@
     @media (min-width:720px){.cards{grid-template-columns:repeat(3,1fr)}}
     .mcard{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}
     .mhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-    .tag{font-size:12px;font-weight:900;padding:4px 8px;border-radius:999px;border:1px solid var(--line)}
+    .tag{font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
     .tag.rec{color:var(--ok);border-color:rgba(22,163,74,.25);background:rgba(22,163,74,.07)}
     .tag.ok{color:var(--blue);border-color:rgba(37,99,235,.25);background:rgba(37,99,235,.07)}
     .tag.bad{color:var(--bad);border-color:rgba(220,38,38,.25);background:rgba(220,38,38,.07)}
     .small{font-size:12px}
     ul{margin:8px 0 0 18px;padding:0}
 
-    /* campos que precisam preencher */
     .need{
       background:var(--needBg)!important;
       border-color:var(--needLine)!important;
       box-shadow:0 0 0 3px rgba(246,195,75,.20)
     }
 
-    /* relatório (card separado no final) */
     .reportKpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
     .rkpi{
       background:#fff;
@@ -152,20 +155,46 @@
       border-radius:14px;
       padding:10px;
     }
-    .rkpi .t{color:var(--muted);font-weight:800;font-size:12px}
+    .rkpi .t{color:var(--muted);font-weight:900;font-size:12px}
     .rkpi .v{font-size:18px;font-weight:900;margin-top:2px}
-    .rtableWrap{
-      margin-top:10px;
-      overflow:auto;
-      border:1px solid rgba(15,23,42,.08);
-      border-radius:14px;
-      background:#fff;
+
+    /* ===== Mobile: tabela vira cards ===== */
+    @media (max-width: 640px){
+      .wrap{margin:12px auto}
+      .totals{grid-template-columns:1fr;gap:8px}
+      .reportKpis{grid-template-columns:1fr;gap:8px}
+      thead{display:none}
+      table, tbody, tr, td{display:block;width:100%}
+      tbody tr{
+        border-bottom:none;
+        background:#fff;
+        border:1px solid var(--line);
+        border-radius:14px;
+        margin:10px 0;
+        overflow:hidden;
+      }
+      td{
+        border-bottom:1px solid var(--line);
+        padding:10px 12px;
+      }
+      td:last-child{border-bottom:none}
+      td.right{text-align:left}
+      td[data-label]::before{
+        content: attr(data-label);
+        display:block;
+        color:var(--muted);
+        font-weight:900;
+        font-size:11px;
+        margin-bottom:6px;
+      }
+      .actionsRow{
+        display:flex;
+        gap:10px;
+        justify-content:flex-end;
+        align-items:center;
+      }
+      .actionsRow .iconBtn{flex:0 0 auto}
     }
-    .rtable{width:100%;border-collapse:separate;border-spacing:0}
-    .rtable th,.rtable td{padding:10px;border-bottom:1px solid rgba(15,23,42,.08);font-size:12px}
-    .rtable th{color:var(--muted);font-weight:900;background:#fbfbfb;text-align:left}
-    .rtable td.right{text-align:right}
-    .rtable tr:last-child td{border-bottom:none}
   </style>
 </head>
 <body>
@@ -174,15 +203,15 @@
     <h1>Calculadora de Escolha de Estações de Energia Pecron</h1>
   </div>
 
-  <!-- FERRAMENTA -->
+  <!-- ENTRADA -->
   <div class="card">
     <div class="sectionTitle">Cargas</div>
 
     <div class="tableWrap">
-      <table class="table">
+      <table>
         <thead>
           <tr>
-            <th style="min-width:280px">Carga</th>
+            <th style="min-width:260px">Carga</th>
             <th class="right">Potência (W)</th>
             <th class="right">Qtd</th>
             <th class="right">Tempo (h)</th>
@@ -213,7 +242,7 @@
 
       <div class="cfg">
         <div class="title">Uso</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
           <label class="pill" style="margin:0;cursor:pointer">
             <input type="radio" name="modo" value="S" checked>
             <span><b>Uso esporádico</b> <span class="muted small">(DoD 90%)</span></span>
@@ -233,7 +262,7 @@
     </div>
   </div>
 
-  <!-- RELATÓRIO (NO FINAL, ANTES DOS CARDS) -->
+  <!-- RELATÓRIO (FINAL, ANTES DOS RESULTADOS) -->
   <div id="reportCard" class="card" style="margin-top:12px;display:none">
     <div class="sectionTitle">Relatório do cálculo</div>
     <div class="muted" id="reportMeta" style="font-size:12px"></div>
@@ -253,8 +282,8 @@
       </div>
     </div>
 
-    <div class="rtableWrap">
-      <table class="rtable">
+    <div class="tableWrap" style="margin-top:10px">
+      <table>
         <thead>
           <tr>
             <th>Carga</th>
@@ -270,14 +299,27 @@
     </div>
   </div>
 
-  <!-- MODELOS -->
-  <div id="modelsSection" class="card" style="margin-top:12px;display:none">
-    <div class="sectionTitle">Modelos compatíveis</div>
-    <div class="cards" id="cards"></div>
+  <!-- RESULTADOS: POR DIA -->
+  <div id="secDia" class="card" style="margin-top:12px;display:none">
+    <div class="sectionTitle">Autonomia por dia</div>
+    <div class="muted" style="font-size:12px;margin-top:-6px">
+      Considera o uso diário das cargas pelos tempos informados para cada uma.
+    </div>
+    <div class="cards" id="cardsDia" style="margin-top:10px"></div>
+  </div>
+
+  <!-- RESULTADOS: CONTÍNUA -->
+  <div id="secCont" class="card" style="margin-top:12px;display:none">
+    <div class="sectionTitle">Autonomia contínua</div>
+    <div class="muted" style="font-size:12px;margin-top:-6px">
+      Considera todas as cargas ligadas ao mesmo tempo, continuamente, até esgotar a bateria. Mínimo: 45 minutos.
+    </div>
+    <div class="cards" id="cardsCont" style="margin-top:10px"></div>
   </div>
 </div>
 
 <script>
+/* =================== DADOS =================== */
 const PRESETS = [
   {name:'Lâmpada LED 9W', power:9, pico:1},
   {name:'Celular', power:30, pico:1},
@@ -297,17 +339,17 @@ const PRESETS = [
 ];
 
 const MODELOS = [
-  {name:'P500', V:12.8, Ah:36, eff:0.85, contW:500, peakW:700},
+  {name:'P500',  V:12.8, Ah:36, eff:0.85, contW:500,  peakW:700},
   {name:'E1000', V:51.2, Ah:20, eff:0.85, contW:1800, peakW:3000},
   {name:'E2400', V:51.2, Ah:40, eff:0.85, contW:2400, peakW:4000},
 ];
 
 const DoD = { S: 0.9, D: 0.8 };
+const MIN_CONT_MINUTES = 45;
 
+/* =================== ELs =================== */
 const tbody = document.getElementById('tbody');
 const btnCalc = document.getElementById('btnCalc');
-const cards = document.getElementById('cards');
-const modelsSection = document.getElementById('modelsSection');
 
 const kpiW = document.getElementById('kpiW');
 const kpiWh = document.getElementById('kpiWh');
@@ -321,11 +363,18 @@ const rTotW = document.getElementById('rTotW');
 const rTotWh = document.getElementById('rTotWh');
 const rTotPk = document.getElementById('rTotPk');
 
+const secDia = document.getElementById('secDia');
+const secCont = document.getElementById('secCont');
+const cardsDia = document.getElementById('cardsDia');
+const cardsCont = document.getElementById('cardsCont');
+
+/* =================== HELPERS =================== */
 function fmt(n, dec=0){
   if (!isFinite(n)) return '—';
   return n.toLocaleString('pt-BR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
 }
 function getModo(){ return document.querySelector('input[name="modo"]:checked').value; }
+
 function showMsg(text, kind='bad'){
   msg.textContent = text;
   msg.className = 'msg ' + (kind === 'ok' ? 'ok' : 'bad');
@@ -352,13 +401,31 @@ function parseQtd(v){
   const n = parseInt(s || '0', 10);
   return isFinite(n) && n > 0 ? n : 0;
 }
-function floor5MinutesFromHours(hours){
-  const mins = Math.floor(Math.max(0, hours) * 60);
-  return Math.floor(mins / 5) * 5; // sempre pra baixo
-}
 function floor5Minutes(mins){
   mins = Math.floor(Math.max(0, mins));
   return Math.floor(mins / 5) * 5; // sempre pra baixo
+}
+function floor5MinutesFromHours(hours){
+  const mins = Math.floor(Math.max(0, hours) * 60);
+  return floor5Minutes(mins);
+}
+function plural(n, s, p){ return n === 1 ? s : p; }
+
+function minutesToLongText(mins){
+  mins = floor5Minutes(mins);
+  const d = Math.floor(mins / (24*60));
+  mins -= d*24*60;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+
+  const parts = [];
+  if (d > 0) parts.push(`${d} ${plural(d,'dia','dias')}`);
+  if (h > 0) parts.push(`${h} ${plural(h,'hora','horas')}`);
+  parts.push(`${m} ${plural(m,'minuto','minutos')}`);
+
+  if (parts.length === 1) return parts[0];
+  if (parts.length === 2) return parts[0] + ' e ' + parts[1];
+  return parts[0] + ' ' + parts[1] + ' e ' + parts[2];
 }
 
 function buildPresetSelect(el){
@@ -367,7 +434,6 @@ function buildPresetSelect(el){
   opt0.value = '';
   opt0.textContent = 'Selecione...';
   el.appendChild(opt0);
-
   for (let i=0;i<PRESETS.length;i++){
     const p = PRESETS[i];
     const opt = document.createElement('option');
@@ -377,6 +443,10 @@ function buildPresetSelect(el){
   }
 }
 
+function modelEnergyNominalWh(m){ return m.V * m.Ah; }
+function modelEnergyUsefulWh(m, modo){ return modelEnergyNominalWh(m) * m.eff * DoD[modo]; }
+
+/* =================== LINHAS =================== */
 function rowIsValid(tr){
   const idxStr = tr.querySelector('.cargaSel').value;
   const qty = parseQtd(tr.querySelector('.qty').value || '');
@@ -420,18 +490,22 @@ function recalcPreviewTotals(){
 
     refreshNeedHighlight(tr);
 
+    const potEl = tr.querySelector('.pot');
+    const consEl = tr.querySelector('.consumo');
+    const picoEl = tr.querySelector('.picoTot');
+
     if (!p){
-      tr.querySelector('.pot').textContent = '0';
-      tr.querySelector('.consumo').textContent = '0';
-      tr.querySelector('.picoTot').textContent = '0';
+      potEl.textContent = '0';
+      consEl.textContent = '0';
+      picoEl.textContent = '0';
       continue;
     }
 
-    tr.querySelector('.pot').textContent = fmt(p.power,0);
+    potEl.textContent = fmt(p.power,0);
 
     if (qty <= 0 || horas <= 0){
-      tr.querySelector('.consumo').textContent = '0';
-      tr.querySelector('.picoTot').textContent = '0';
+      consEl.textContent = '0';
+      picoEl.textContent = '0';
       continue;
     }
 
@@ -442,8 +516,8 @@ function recalcPreviewTotals(){
     const wh = w * horasAdj;
     const pk = w * p.pico;
 
-    tr.querySelector('.consumo').textContent = fmt(wh,0);
-    tr.querySelector('.picoTot').textContent = fmt(pk,0);
+    consEl.textContent = fmt(wh,0);
+    picoEl.textContent = fmt(pk,0);
 
     totW += w; totWh += wh; totPk += pk;
   }
@@ -457,16 +531,19 @@ function recalcPreviewTotals(){
 
 function makeRowBlank(){
   const tr = document.createElement('tr');
+
   tr.innerHTML = `
-    <td><select class="cargaSel need" style="width:100%"></select></td>
-    <td class="right"><span class="pot">0</span></td>
-    <td class="right"><input class="qty need" type="text" inputmode="numeric" value=""></td>
-    <td class="right"><input class="horas need" type="text" inputmode="decimal" value=""></td>
-    <td class="right"><span class="consumo">0</span></td>
-    <td class="right"><span class="picoTot">0</span></td>
-    <td class="right" style="white-space:nowrap">
-      <button class="iconBtn btnPlus" title="Adicionar nova linha">＋</button>
-      <button class="iconBtn btnDel" title="Remover linha">🗑</button>
+    <td data-label="Carga"><select class="cargaSel need" style="width:100%"></select></td>
+    <td data-label="Potência (W)" class="right"><span class="pot">0</span></td>
+    <td data-label="Qtd" class="right"><input class="qty need" type="text" inputmode="numeric" value=""></td>
+    <td data-label="Tempo (h)" class="right"><input class="horas need" type="text" inputmode="decimal" value=""></td>
+    <td data-label="Consumo (Wh)" class="right"><span class="consumo">0</span></td>
+    <td data-label="Pico total (W)" class="right"><span class="picoTot">0</span></td>
+    <td data-label="Ação" class="right">
+      <div class="actionsRow" style="white-space:nowrap">
+        <button class="iconBtn btnPlus" title="Adicionar nova linha">＋</button>
+        <button class="iconBtn btnDel" title="Remover linha">🗑</button>
+      </div>
     </td>
   `;
 
@@ -519,8 +596,6 @@ function makeRowBlank(){
     tr.remove();
     hideMsg();
     recalcPreviewTotals();
-    modelsSection.style.display = 'none';
-    cards.innerHTML = '';
     if (tbody.querySelectorAll('tr').length === 0){
       tbody.appendChild(makeRowBlank());
       recalcPreviewTotals();
@@ -564,8 +639,8 @@ function collectRowsValidated(){
     tr.querySelector('.horas').value = horasAdj > 0 ? formatHorasBR(horasAdj, 2) : '';
     tr.querySelector('.qty').value = String(qty);
 
-    const w = p.power * qty;
-    const wh = w * horasAdj;
+    const w  = p.power * qty;       // potência simultânea
+    const wh = w * horasAdj;        // energia por dia (tempos informados)
     const pk = w * p.pico;
 
     items.push({ name:p.name, power:p.power, pico:p.pico, qty, horas:horasAdj, w, wh, pk });
@@ -585,39 +660,18 @@ function calcTotals(items){
   return { totW, totWh, totPk };
 }
 
-function modelEnergyNominalWh(m){ return m.V * m.Ah; }
-function modelEnergyUsefulWh(m, modo){ return modelEnergyNominalWh(m) * m.eff * DoD[modo]; }
-
-function plural(n, s, p){ return n === 1 ? s : p; }
-
-function minutesToLongText(mins){
-  mins = floor5Minutes(mins);
-  const d = Math.floor(mins / (24*60));
-  mins -= d*24*60;
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-
-  const parts = [];
-  if (d > 0) parts.push(`${d} ${plural(d,'dia','dias')}`);
-  if (h > 0) parts.push(`${h} ${plural(h,'hora','horas')}`);
-  parts.push(`${m} ${plural(m,'minuto','minutos')}`);
-
-  if (parts.length === 1) return parts[0];
-  if (parts.length === 2) return parts[0] + ' e ' + parts[1];
-  return parts[0] + ' ' + parts[1] + ' e ' + parts[2];
-}
-
+/* =================== RELATÓRIO =================== */
 function renderReport(items, totals){
   reportBody.innerHTML = '';
   for (const it of items){
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${it.name}</td>
-      <td class="right">${fmt(it.power,0)}</td>
-      <td class="right">${fmt(it.qty,0)}</td>
-      <td class="right">${fmt(it.horas,2)}</td>
-      <td class="right">${fmt(it.wh,0)}</td>
-      <td class="right">${fmt(it.pk,0)}</td>
+      <td data-label="Carga">${it.name}</td>
+      <td data-label="Potência (W)" class="right">${fmt(it.power,0)}</td>
+      <td data-label="Qtd" class="right">${fmt(it.qty,0)}</td>
+      <td data-label="Tempo (h)" class="right">${fmt(it.horas,2)}</td>
+      <td data-label="Consumo (Wh)" class="right">${fmt(it.wh,0)}</td>
+      <td data-label="Pico (W)" class="right">${fmt(it.pk,0)}</td>
     `;
     reportBody.appendChild(tr);
   }
@@ -632,13 +686,15 @@ function renderReport(items, totals){
   reportCard.style.display = 'block';
 }
 
-function renderCards(results){
-  cards.innerHTML = '';
+/* =================== CARDS =================== */
+function renderCards(container, results){
+  container.innerHTML = '';
   for (const r of results){
     const div = document.createElement('div');
     div.className = 'mcard';
+
     const tagClass = r.recommended ? 'rec' : (r.compat ? 'ok' : 'bad');
-    const tagText = r.recommended ? 'Recomendado' : (r.compat ? 'Compatível' : 'Não compatível');
+    const tagText  = r.recommended ? 'Recomendado' : (r.compat ? 'Compatível' : 'Não compatível');
 
     div.innerHTML = `
       <div class="mhead">
@@ -663,79 +719,127 @@ function renderCards(results){
       div.appendChild(ul);
     }
 
-    cards.appendChild(div);
+    container.appendChild(div);
   }
 }
 
+function markRecommendedSmallestCompatible(results){
+  const compatibles = results.filter(x => x.compat);
+  if (!compatibles.length) return results;
+
+  compatibles.sort((a,b) => (a.energyNominalWh - b.energyNominalWh) || (a.contW - b.contW));
+  const recName = compatibles[0].name;
+
+  return results.map(x => ({...x, recommended: (x.compat && x.name === recName)}));
+}
+
+/* =================== RESET =================== */
 function resetInputsForNewCalc(){
   tbody.innerHTML = '';
   tbody.appendChild(makeRowBlank());
   recalcPreviewTotals();
 }
 
+/* =================== CALC =================== */
 btnCalc.addEventListener('click', () => {
   hideMsg();
 
   const got = collectRowsValidated();
   if (!got.ok){
     showMsg(got.error, 'bad');
-    modelsSection.style.display = 'none';
-    cards.innerHTML = '';
+    reportCard.style.display = 'none';
+    secDia.style.display = 'none';
+    secCont.style.display = 'none';
     return;
   }
 
   const modo = getModo();
   const totals = calcTotals(got.items);
 
-  // relatório (no final)
   renderReport(got.items, totals);
 
-  // calcula compatibilidade + autonomia (autonomia só se compatível)
-  const tmp = MODELOS.map(m => {
+  // --------- POR DIA (usa tempos para energia e autonomia em "dias")
+  const resDiaRaw = MODELOS.map(m => {
     const energyNominalWh = modelEnergyNominalWh(m);
-    const energyUsefulWh = modelEnergyUsefulWh(m, modo);
+    const energyUsefulWh  = modelEnergyUsefulWh(m, modo);
 
-    const passW = totals.totW <= m.contW + 1e-9;
+    const passW  = totals.totW  <= m.contW + 1e-9;
     const passPk = totals.totPk <= m.peakW + 1e-9;
-    const passE = totals.totWh <= energyUsefulWh + 1e-9;
+    const passE  = totals.totWh <= energyUsefulWh + 1e-9;
 
     const compat = passW && passPk && passE;
 
     const reasons = [];
-    if (!passW) reasons.push(`Excede potência em ${fmt(totals.totW - m.contW,0)} W`);
+    if (!passW)  reasons.push(`Excede potência em ${fmt(totals.totW - m.contW,0)} W`);
     if (!passPk) reasons.push(`Excede pico em ${fmt(totals.totPk - m.peakW,0)} W`);
-    if (!passE) reasons.push(`Energia insuficiente: falta ${fmt(totals.totWh - energyUsefulWh,0)} Wh`);
+    if (!passE)  reasons.push(`Energia insuficiente: falta ${fmt(totals.totWh - energyUsefulWh,0)} Wh`);
 
     let autonomyText = '';
     if (compat){
-      const ratio = (totals.totWh > 0) ? (energyUsefulWh / totals.totWh) : Infinity;
-      const minutes = isFinite(ratio) ? (ratio * 24 * 60) : 999999999;
+      const days = (totals.totWh > 0) ? (energyUsefulWh / totals.totWh) : Infinity;
+      const minutes = isFinite(days) ? (days * 24 * 60) : 999999999;
       autonomyText = (totals.totWh <= 0) ? '∞' : minutesToLongText(minutes);
     }
 
-    return { name:m.name, contW:m.contW, peakW:m.peakW, energyNominalWh, compat, reasons, autonomyText };
+    return {
+      name:m.name, contW:m.contW, peakW:m.peakW,
+      energyNominalWh, compat, reasons, autonomyText,
+      recommended:false
+    };
   });
+  const resDia = markRecommendedSmallestCompatible(resDiaRaw);
 
-  // recomenda sempre a menor compatível (menor energia nominal; desempate por potência contínua)
-  const compatibles = tmp.filter(x => x.compat);
-  let recommendedName = '';
-  if (compatibles.length){
-    compatibles.sort((a,b) => (a.energyNominalWh - b.energyNominalWh) || (a.contW - b.contW));
-    recommendedName = compatibles[0].name;
-  }
+  // --------- CONTÍNUA (ignora tempos; exige mínimo de 45min)
+  const resContRaw = MODELOS.map(m => {
+    const energyNominalWh = modelEnergyNominalWh(m);
+    const energyUsefulWh  = modelEnergyUsefulWh(m, modo);
 
-  const results = tmp.map(x => ({...x, recommended: (x.compat && x.name === recommendedName)}));
+    const passW  = totals.totW  <= m.contW + 1e-9;
+    const passPk = totals.totPk <= m.peakW + 1e-9;
 
-  modelsSection.style.display = 'block';
-  renderCards(results);
+    let contMinutes = 0;
+    if (totals.totW > 0){
+      contMinutes = (energyUsefulWh / totals.totW) * 60; // Wh/W = h
+    }
 
-  if (!results.some(r => r.compat)) showMsg('Nenhum modelo ficou compatível.', 'bad');
+    const passMin = contMinutes >= MIN_CONT_MINUTES - 1e-9;
+    const compat = passW && passPk && passMin;
+
+    const reasons = [];
+    if (!passW)   reasons.push(`Excede potência em ${fmt(totals.totW - m.contW,0)} W`);
+    if (!passPk)  reasons.push(`Excede pico em ${fmt(totals.totPk - m.peakW,0)} W`);
+    if (!passMin) reasons.push(`Autonomia contínua menor que ${MIN_CONT_MINUTES} minutos`);
+
+    let autonomyText = '';
+    if (compat){
+      autonomyText = minutesToLongText(contMinutes);
+    }
+
+    return {
+      name:m.name, contW:m.contW, peakW:m.peakW,
+      energyNominalWh, compat, reasons, autonomyText,
+      recommended:false
+    };
+  });
+  const resCont = markRecommendedSmallestCompatible(resContRaw);
+
+  // Mostrar seções
+  secDia.style.display = 'block';
+  secCont.style.display = 'block';
+  renderCards(cardsDia, resDia);
+  renderCards(cardsCont, resCont);
+
+  // mensagem geral
+  const anyDia = resDia.some(x => x.compat);
+  const anyCont = resCont.some(x => x.compat);
+  if (!anyDia && !anyCont) showMsg('Nenhum modelo ficou compatível (em nenhum critério).', 'bad');
   else showMsg('Cálculo concluído.', 'ok');
 
-  // limpa as cargas para novo cálculo
+  // limpa para novo cálculo
   resetInputsForNewCalc();
 });
 
+/* =================== INIT =================== */
 function init(){
   tbody.innerHTML = '';
   tbody.appendChild(makeRowBlank());
