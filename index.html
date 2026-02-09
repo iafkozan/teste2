@@ -29,14 +29,14 @@
 
     *{box-sizing:border-box}
     body{margin:0;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial}
-    .wrap{max-width:1100px;margin:18px auto;padding:0 12px}
+    .wrap{max-width:1100px;margin:16px auto;padding:0 12px}
 
     .hero{
       border-radius:16px;
       background:linear-gradient(180deg, var(--yellow2), rgba(255,243,205,0));
       border:1px solid rgba(246,195,75,.45);
-      padding:14px;
-      margin-bottom:12px;
+      padding:12px 14px;
+      margin-bottom:10px;
     }
     .hero h1{font-size:18px;margin:0}
 
@@ -67,10 +67,10 @@
     select,input{
       background:#fff;border:1px solid var(--line);color:var(--text);
       border-radius:12px;padding:12px;
-      min-height:44px; /* touch */
+      min-height:44px;
       font-size:14px;
     }
-    .hr{height:1px;background:var(--line);margin:12px 0}
+    .hr{height:1px;background:var(--line);margin:10px 0}
 
     .tableWrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
     table{width:100%;border-collapse:separate;border-spacing:0}
@@ -97,6 +97,13 @@
     .btn:hover{filter:brightness(.95)}
     .btn:disabled{opacity:.55;cursor:not-allowed}
 
+    .btnGhost{
+      background:#fff;border:1px solid var(--line);
+      color:var(--text);border-radius:12px;padding:12px 14px;
+      cursor:pointer;min-height:44px;font-weight:800
+    }
+    .btnGhost:hover{background:var(--card2)}
+
     .iconBtn{
       width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
       background:#fff;cursor:pointer;color:var(--text);font-size:18px
@@ -104,30 +111,67 @@
     .iconBtn:hover{background:var(--card2)}
     .iconBtn:disabled{opacity:.40;cursor:not-allowed}
 
-    .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-    @media (min-width:920px){.totals{grid-template-columns:repeat(4,1fr)}}
+    /* ====== ÁREA AZUL (KPIs + Uso) mais compacta ====== */
+    .totals{
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:8px;
+      align-items:start;          /* evita esticar altura */
+    }
+    @media (max-width: 920px){
+      .totals{grid-template-columns:repeat(2, 1fr)}
+    }
 
     .kpi{
-      background:linear-gradient(180deg, rgba(246,195,75,.10), rgba(246,195,75,0));
-      border:1px solid rgba(246,195,75,.35);
-      border-radius:14px;
-      padding:10px
+      background:linear-gradient(180deg, rgba(246,195,75,.09), rgba(246,195,75,0));
+      border:1px solid rgba(246,195,75,.32);
+      border-radius:12px;
+      padding:8px 10px;           /* menor */
+      align-self:start;           /* evita esticar */
     }
-    .kpi .t{color:var(--muted);font-weight:800;font-size:12px}
-    .kpi .v{font-size:18px;font-weight:900;margin-top:2px}
+    .kpi .t{color:var(--muted);font-weight:900;font-size:11px}
+    .kpi .v{font-size:16px;font-weight:900;margin-top:2px}
 
     .cfg{
       background:#eef2f7;
       border:1px solid var(--line);
-      border-radius:14px;padding:10px
+      border-radius:12px;
+      padding:8px 10px;           /* menor */
+      align-self:start;
     }
-    .cfg .title{color:var(--muted);font-size:12px;font-weight:900}
+    .cfg .title{color:var(--muted);font-size:11px;font-weight:900;margin-bottom:6px}
+
     .pill{
-      display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);
-      border-radius:999px;padding:10px 12px;background:#fff;min-height:44px
+      display:flex;align-items:center;gap:8px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:8px 10px;
+      background:#fff;
+      min-height:38px;            /* menor */
+      margin:0;
+      cursor:pointer;
+    }
+    .pill span{font-size:13px}
+
+    .pillRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    /* desktop: duas opções lado a lado */
+    @media (min-width: 921px){
+      .pillRow{flex-wrap:nowrap}
+      .pill{flex:1}
     }
 
-    .msg{margin-top:10px;padding:10px;border-radius:14px;border:1px solid var(--line);background:#fff}
+    .msg{
+      margin-top:8px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:13px;
+    }
     .msg.bad{border-color:rgba(220,38,38,.28)}
     .msg.ok{border-color:rgba(22,163,74,.28)}
 
@@ -145,24 +189,29 @@
     .need{
       background:var(--needBg)!important;
       border-color:var(--needLine)!important;
-      box-shadow:0 0 0 3px rgba(246,195,75,.20)
+      box-shadow:0 0 0 3px rgba(246,195,75,.18)
     }
 
-    .reportKpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
-    .rkpi{
-      background:#fff;
-      border:1px solid rgba(246,195,75,.35);
-      border-radius:14px;
-      padding:10px;
+    .note{
+      margin-top:-6px;
+      font-size:12px;
+      color:var(--muted);
+      padding:8px 10px;
+      border:1px dashed rgba(15,23,42,.14);
+      border-radius:12px;
+      background:rgba(255,255,255,.65);
     }
-    .rkpi .t{color:var(--muted);font-weight:900;font-size:12px}
-    .rkpi .v{font-size:18px;font-weight:900;margin-top:2px}
 
-    /* ===== Mobile: tabela vira cards ===== */
+    /* ===== Mobile: tabela vira cards + tudo mais compacto ===== */
     @media (max-width: 640px){
       .wrap{margin:12px auto}
+      .card{padding:12px}
+      .hero{padding:10px 12px}
+      .hero h1{font-size:16px}
+
       .totals{grid-template-columns:1fr;gap:8px}
-      .reportKpis{grid-template-columns:1fr;gap:8px}
+      .kpi .v{font-size:15px}
+
       thead{display:none}
       table, tbody, tr, td{display:block;width:100%}
       tbody tr{
@@ -193,7 +242,6 @@
         justify-content:flex-end;
         align-items:center;
       }
-      .actionsRow .iconBtn{flex:0 0 auto}
     }
   </style>
 </head>
@@ -242,14 +290,14 @@
 
       <div class="cfg">
         <div class="title">Uso</div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
-          <label class="pill" style="margin:0;cursor:pointer">
+        <div class="pillRow">
+          <label class="pill">
             <input type="radio" name="modo" value="S" checked>
-            <span><b>Uso esporádico</b> <span class="muted small">(DoD 90%)</span></span>
+            <span><b>Uso esporádico</b> <span class="muted">(DoD 90%)</span></span>
           </label>
-          <label class="pill" style="margin:0;cursor:pointer">
+          <label class="pill">
             <input type="radio" name="modo" value="D">
-            <span><b>Uso diário</b> <span class="muted small">(DoD 80%)</span></span>
+            <span><b>Uso diário</b> <span class="muted">(DoD 80%)</span></span>
           </label>
         </div>
       </div>
@@ -257,53 +305,17 @@
 
     <div id="msg" class="msg" style="display:none"></div>
 
-    <div style="display:flex;justify-content:flex-end;margin-top:12px">
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap">
+      <button id="btnNovo" class="btnGhost">Novo Cálculo</button>
       <button id="btnCalc" class="btn">Calcular</button>
-    </div>
-  </div>
-
-  <!-- RELATÓRIO (FINAL, ANTES DOS RESULTADOS) -->
-  <div id="reportCard" class="card" style="margin-top:12px;display:none">
-    <div class="sectionTitle">Relatório do cálculo</div>
-    <div class="muted" id="reportMeta" style="font-size:12px"></div>
-
-    <div class="reportKpis">
-      <div class="rkpi">
-        <div class="t">Potência total</div>
-        <div class="v" id="rTotW">0 W</div>
-      </div>
-      <div class="rkpi">
-        <div class="t">Consumo total</div>
-        <div class="v" id="rTotWh">0 Wh</div>
-      </div>
-      <div class="rkpi">
-        <div class="t">Potência pico total</div>
-        <div class="v" id="rTotPk">0 W</div>
-      </div>
-    </div>
-
-    <div class="tableWrap" style="margin-top:10px">
-      <table>
-        <thead>
-          <tr>
-            <th>Carga</th>
-            <th class="right">Potência (W)</th>
-            <th class="right">Qtd</th>
-            <th class="right">Tempo (h)</th>
-            <th class="right">Consumo (Wh)</th>
-            <th class="right">Pico (W)</th>
-          </tr>
-        </thead>
-        <tbody id="reportBody"></tbody>
-      </table>
     </div>
   </div>
 
   <!-- RESULTADOS: POR DIA -->
   <div id="secDia" class="card" style="margin-top:12px;display:none">
     <div class="sectionTitle">Autonomia por dia</div>
-    <div class="muted" style="font-size:12px;margin-top:-6px">
-      Considera o uso diário das cargas pelos tempos informados para cada uma.
+    <div class="note">
+      Se você usar as cargas ao longo do dia apenas pelos tempos informados em cada uma, a autonomia estimada é a indicada abaixo.
     </div>
     <div class="cards" id="cardsDia" style="margin-top:10px"></div>
   </div>
@@ -311,8 +323,8 @@
   <!-- RESULTADOS: CONTÍNUA -->
   <div id="secCont" class="card" style="margin-top:12px;display:none">
     <div class="sectionTitle">Autonomia contínua</div>
-    <div class="muted" style="font-size:12px;margin-top:-6px">
-      Considera todas as cargas ligadas ao mesmo tempo, continuamente, até esgotar a bateria. Mínimo: 45 minutos.
+    <div class="note">
+      Se todas as cargas ficarem ligadas ao mesmo tempo, de forma contínua (ignorando os tempos), uma estação 100% carregada sustentará esse conjunto pelo tempo abaixo, até esgotar a bateria. Mínimo: 45 minutos.
     </div>
     <div class="cards" id="cardsCont" style="margin-top:10px"></div>
   </div>
@@ -350,18 +362,12 @@ const MIN_CONT_MINUTES = 45;
 /* =================== ELs =================== */
 const tbody = document.getElementById('tbody');
 const btnCalc = document.getElementById('btnCalc');
+const btnNovo = document.getElementById('btnNovo');
 
 const kpiW = document.getElementById('kpiW');
 const kpiWh = document.getElementById('kpiWh');
 const kpiPk = document.getElementById('kpiPk');
 const msg = document.getElementById('msg');
-
-const reportCard = document.getElementById('reportCard');
-const reportBody = document.getElementById('reportBody');
-const reportMeta = document.getElementById('reportMeta');
-const rTotW = document.getElementById('rTotW');
-const rTotWh = document.getElementById('rTotWh');
-const rTotPk = document.getElementById('rTotPk');
 
 const secDia = document.getElementById('secDia');
 const secCont = document.getElementById('secCont');
@@ -660,32 +666,6 @@ function calcTotals(items){
   return { totW, totWh, totPk };
 }
 
-/* =================== RELATÓRIO =================== */
-function renderReport(items, totals){
-  reportBody.innerHTML = '';
-  for (const it of items){
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td data-label="Carga">${it.name}</td>
-      <td data-label="Potência (W)" class="right">${fmt(it.power,0)}</td>
-      <td data-label="Qtd" class="right">${fmt(it.qty,0)}</td>
-      <td data-label="Tempo (h)" class="right">${fmt(it.horas,2)}</td>
-      <td data-label="Consumo (Wh)" class="right">${fmt(it.wh,0)}</td>
-      <td data-label="Pico (W)" class="right">${fmt(it.pk,0)}</td>
-    `;
-    reportBody.appendChild(tr);
-  }
-
-  const now = new Date();
-  reportMeta.textContent = `Gerado em ${now.toLocaleDateString('pt-BR')} ${now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}`;
-
-  rTotW.textContent = `${fmt(totals.totW,0)} W`;
-  rTotWh.textContent = `${fmt(totals.totWh,0)} Wh`;
-  rTotPk.textContent = `${fmt(totals.totPk,0)} W`;
-
-  reportCard.style.display = 'block';
-}
-
 /* =================== CARDS =================== */
 function renderCards(container, results){
   container.innerHTML = '';
@@ -733,21 +713,26 @@ function markRecommendedSmallestCompatible(results){
   return results.map(x => ({...x, recommended: (x.compat && x.name === recName)}));
 }
 
-/* =================== RESET =================== */
-function resetInputsForNewCalc(){
+/* =================== RESET (NOVO CÁLCULO) =================== */
+function novoCalculo(){
+  hideMsg();
+  secDia.style.display = 'none';
+  secCont.style.display = 'none';
+  cardsDia.innerHTML = '';
+  cardsCont.innerHTML = '';
   tbody.innerHTML = '';
   tbody.appendChild(makeRowBlank());
   recalcPreviewTotals();
+  window.scrollTo({top:0, behavior:'smooth'});
 }
 
-/* =================== CALC =================== */
+/* =================== CALC (NÃO ALTERADO) =================== */
 btnCalc.addEventListener('click', () => {
   hideMsg();
 
   const got = collectRowsValidated();
   if (!got.ok){
     showMsg(got.error, 'bad');
-    reportCard.style.display = 'none';
     secDia.style.display = 'none';
     secCont.style.display = 'none';
     return;
@@ -755,8 +740,6 @@ btnCalc.addEventListener('click', () => {
 
   const modo = getModo();
   const totals = calcTotals(got.items);
-
-  renderReport(got.items, totals);
 
   // --------- POR DIA (usa tempos para energia e autonomia em "dias")
   const resDiaRaw = MODELOS.map(m => {
@@ -781,11 +764,7 @@ btnCalc.addEventListener('click', () => {
       autonomyText = (totals.totWh <= 0) ? '∞' : minutesToLongText(minutes);
     }
 
-    return {
-      name:m.name, contW:m.contW, peakW:m.peakW,
-      energyNominalWh, compat, reasons, autonomyText,
-      recommended:false
-    };
+    return { name:m.name, contW:m.contW, peakW:m.peakW, energyNominalWh, compat, reasons, autonomyText, recommended:false };
   });
   const resDia = markRecommendedSmallestCompatible(resDiaRaw);
 
@@ -815,11 +794,7 @@ btnCalc.addEventListener('click', () => {
       autonomyText = minutesToLongText(contMinutes);
     }
 
-    return {
-      name:m.name, contW:m.contW, peakW:m.peakW,
-      energyNominalWh, compat, reasons, autonomyText,
-      recommended:false
-    };
+    return { name:m.name, contW:m.contW, peakW:m.peakW, energyNominalWh, compat, reasons, autonomyText, recommended:false };
   });
   const resCont = markRecommendedSmallestCompatible(resContRaw);
 
@@ -829,15 +804,13 @@ btnCalc.addEventListener('click', () => {
   renderCards(cardsDia, resDia);
   renderCards(cardsCont, resCont);
 
-  // mensagem geral
   const anyDia = resDia.some(x => x.compat);
   const anyCont = resCont.some(x => x.compat);
   if (!anyDia && !anyCont) showMsg('Nenhum modelo ficou compatível (em nenhum critério).', 'bad');
   else showMsg('Cálculo concluído.', 'ok');
-
-  // limpa para novo cálculo
-  resetInputsForNewCalc();
 });
+
+btnNovo.addEventListener('click', novoCalculo);
 
 /* =================== INIT =================== */
 function init(){
