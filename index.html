@@ -28,7 +28,11 @@
     }
 
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      overflow-x:hidden; /* nunca rolagem horizontal */
+    }
     .wrap{max-width:1100px;margin:16px auto;padding:0 12px}
 
     .hero{
@@ -63,17 +67,25 @@
       background:linear-gradient(90deg, var(--yellow), rgba(246,195,75,0));
     }
 
-    .muted{color:var(--muted)}
+    /* ===== Inputs mais finos ===== */
     select,input{
       background:#fff;border:1px solid var(--line);color:var(--text);
-      border-radius:12px;padding:12px;
-      min-height:44px;
+      border-radius:12px;
+      padding:10px 12px;
+      min-height:40px;
       font-size:14px;
     }
-    .hr{height:1px;background:var(--line);margin:10px 0}
 
-    .tableWrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
-    table{width:100%;border-collapse:separate;border-spacing:0}
+    .hr{height:2px;background:rgba(15,23,42,.08);margin:10px 0} /* linha mais grossa */
+
+    /* ===== Desktop/tablet: tabela normal sem barra horizontal ===== */
+    .tableWrap{
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fff;
+      overflow:visible; /* remove scrollbar */
+    }
+    table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
     thead th{
       background:var(--card2);
       border-bottom:1px solid var(--line);
@@ -89,10 +101,19 @@
     td.right{text-align:right}
     tbody tr:last-child td{border-bottom:none}
 
+    /* larguras compactas (evita overflow) */
+    col.c1{width:30%}   /* carga */
+    col.c2{width:12%}   /* potencia */
+    col.c3{width:10%}   /* qtd */
+    col.c4{width:12%}   /* tempo */
+    col.c5{width:14%}   /* consumo */
+    col.c6{width:14%}   /* pico */
+    col.c7{width:8%}    /* ação */
+
     .btn{
       background:var(--btn);border:1px solid var(--btn);
       color:var(--btnText);border-radius:12px;padding:12px 14px;
-      cursor:pointer;min-height:44px;font-weight:800
+      cursor:pointer;min-height:40px;font-weight:800
     }
     .btn:hover{filter:brightness(.95)}
     .btn:disabled{opacity:.55;cursor:not-allowed}
@@ -100,34 +121,31 @@
     .btnGhost{
       background:#fff;border:1px solid var(--line);
       color:var(--text);border-radius:12px;padding:12px 14px;
-      cursor:pointer;min-height:44px;font-weight:800
+      cursor:pointer;min-height:40px;font-weight:800
     }
     .btnGhost:hover{background:var(--card2)}
 
     .iconBtn{
-      width:44px;height:44px;border-radius:12px;border:1px solid var(--line);
+      width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
       background:#fff;cursor:pointer;color:var(--text);font-size:18px
     }
     .iconBtn:hover{background:var(--card2)}
     .iconBtn:disabled{opacity:.40;cursor:not-allowed}
 
-    /* ====== ÁREA AZUL (KPIs + Uso) mais compacta ====== */
+    /* ===== Área de totais alinhada e compacta ===== */
     .totals{
       display:grid;
-      grid-template-columns:repeat(4, 1fr);
+      grid-template-columns:repeat(12, 1fr);
       gap:8px;
-      align-items:start;          /* evita esticar altura */
+      align-items:start;
     }
-    @media (max-width: 920px){
-      .totals{grid-template-columns:repeat(2, 1fr)}
-    }
-
     .kpi{
       background:linear-gradient(180deg, rgba(246,195,75,.09), rgba(246,195,75,0));
       border:1px solid rgba(246,195,75,.32);
       border-radius:12px;
-      padding:8px 10px;           /* menor */
-      align-self:start;           /* evita esticar */
+      padding:8px 10px;
+      align-self:start;
+      min-height:64px;
     }
     .kpi .t{color:var(--muted);font-weight:900;font-size:11px}
     .kpi .v{font-size:16px;font-weight:900;margin-top:2px}
@@ -136,8 +154,9 @@
       background:#eef2f7;
       border:1px solid var(--line);
       border-radius:12px;
-      padding:8px 10px;           /* menor */
+      padding:8px 10px;
       align-self:start;
+      min-height:64px;
     }
     .cfg .title{color:var(--muted);font-size:11px;font-weight:900;margin-bottom:6px}
 
@@ -147,22 +166,19 @@
       border-radius:999px;
       padding:8px 10px;
       background:#fff;
-      min-height:38px;            /* menor */
+      min-height:38px;
       margin:0;
       cursor:pointer;
     }
     .pill span{font-size:13px}
+    .pillRow{display:flex;gap:8px;flex-wrap:nowrap}
+    .pill{flex:1}
 
-    .pillRow{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-    }
-    /* desktop: duas opções lado a lado */
-    @media (min-width: 921px){
-      .pillRow{flex-wrap:nowrap}
-      .pill{flex:1}
-    }
+    /* posições (KPIs menores, Uso maior) */
+    .k1{grid-column:span 2}
+    .k2{grid-column:span 2}
+    .k3{grid-column:span 2}
+    .u1{grid-column:span 6}
 
     .msg{
       margin-top:8px;
@@ -202,16 +218,15 @@
       background:rgba(255,255,255,.65);
     }
 
-    /* ===== Mobile: tabela vira cards + tudo mais compacto ===== */
-    @media (max-width: 640px){
+    /* ===== Mobile: remove tabela e monta layout sem scroll ===== */
+    @media (max-width: 720px){
       .wrap{margin:12px auto}
       .card{padding:12px}
       .hero{padding:10px 12px}
       .hero h1{font-size:16px}
+      select,input{min-height:38px;padding:9px 11px;font-size:14px}
 
-      .totals{grid-template-columns:1fr;gap:8px}
-      .kpi .v{font-size:15px}
-
+      /* entra em modo card (sem scroll horizontal) */
       thead{display:none}
       table, tbody, tr, td{display:block;width:100%}
       tbody tr{
@@ -236,12 +251,19 @@
         font-size:11px;
         margin-bottom:6px;
       }
+
       .actionsRow{
         display:flex;
         gap:10px;
         justify-content:flex-end;
         align-items:center;
       }
+
+      /* totais empilhados e compactos */
+      .totals{grid-template-columns:1fr;gap:8px}
+      .k1,.k2,.k3,.u1{grid-column:span 12}
+      .kpi,.cfg{min-height:auto}
+      .pillRow{flex-wrap:wrap}
     }
   </style>
 </head>
@@ -251,15 +273,17 @@
     <h1>Calculadora de Escolha de Estações de Energia Pecron</h1>
   </div>
 
-  <!-- ENTRADA -->
   <div class="card">
     <div class="sectionTitle">Cargas</div>
 
     <div class="tableWrap">
       <table>
+        <colgroup>
+          <col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"><col class="c7">
+        </colgroup>
         <thead>
           <tr>
-            <th style="min-width:260px">Carga</th>
+            <th>Carga</th>
             <th class="right">Potência (W)</th>
             <th class="right">Qtd</th>
             <th class="right">Tempo (h)</th>
@@ -275,20 +299,20 @@
     <div class="hr"></div>
 
     <div class="totals">
-      <div class="kpi">
+      <div class="kpi k1">
         <div class="t">Potência total</div>
         <div class="v" id="kpiW">0 W</div>
       </div>
-      <div class="kpi">
+      <div class="kpi k2">
         <div class="t">Consumo total</div>
         <div class="v" id="kpiWh">0 Wh</div>
       </div>
-      <div class="kpi">
+      <div class="kpi k3">
         <div class="t">Potência pico total</div>
         <div class="v" id="kpiPk">0 W</div>
       </div>
 
-      <div class="cfg">
+      <div class="cfg u1">
         <div class="title">Uso</div>
         <div class="pillRow">
           <label class="pill">
@@ -311,27 +335,24 @@
     </div>
   </div>
 
-  <!-- RESULTADOS: POR DIA -->
   <div id="secDia" class="card" style="margin-top:12px;display:none">
     <div class="sectionTitle">Autonomia por dia</div>
     <div class="note">
-      Se você usar as cargas ao longo do dia apenas pelos tempos informados em cada uma, a autonomia estimada é a indicada abaixo.
+      Considera o uso diário das cargas pelos tempos informados em cada uma. A autonomia abaixo mostra por quantos dias esse padrão de uso pode ser repetido.
     </div>
     <div class="cards" id="cardsDia" style="margin-top:10px"></div>
   </div>
 
-  <!-- RESULTADOS: CONTÍNUA -->
   <div id="secCont" class="card" style="margin-top:12px;display:none">
     <div class="sectionTitle">Autonomia contínua</div>
     <div class="note">
-      Se todas as cargas ficarem ligadas ao mesmo tempo, de forma contínua (ignorando os tempos), uma estação 100% carregada sustentará esse conjunto pelo tempo abaixo, até esgotar a bateria. Mínimo: 45 minutos.
+      Considera todas as cargas ligadas ao mesmo tempo, continuamente (ignorando os tempos). A autonomia abaixo indica por quanto tempo a estação sustenta esse conjunto até esgotar a bateria. Mínimo: 45 minutos.
     </div>
     <div class="cards" id="cardsCont" style="margin-top:10px"></div>
   </div>
 </div>
 
 <script>
-/* =================== DADOS =================== */
 const PRESETS = [
   {name:'Lâmpada LED 9W', power:9, pico:1},
   {name:'Celular', power:30, pico:1},
@@ -359,7 +380,6 @@ const MODELOS = [
 const DoD = { S: 0.9, D: 0.8 };
 const MIN_CONT_MINUTES = 45;
 
-/* =================== ELs =================== */
 const tbody = document.getElementById('tbody');
 const btnCalc = document.getElementById('btnCalc');
 const btnNovo = document.getElementById('btnNovo');
@@ -374,7 +394,6 @@ const secCont = document.getElementById('secCont');
 const cardsDia = document.getElementById('cardsDia');
 const cardsCont = document.getElementById('cardsCont');
 
-/* =================== HELPERS =================== */
 function fmt(n, dec=0){
   if (!isFinite(n)) return '—';
   return n.toLocaleString('pt-BR', {minimumFractionDigits:dec, maximumFractionDigits:dec});
@@ -409,7 +428,7 @@ function parseQtd(v){
 }
 function floor5Minutes(mins){
   mins = Math.floor(Math.max(0, mins));
-  return Math.floor(mins / 5) * 5; // sempre pra baixo
+  return Math.floor(mins / 5) * 5;
 }
 function floor5MinutesFromHours(hours){
   const mins = Math.floor(Math.max(0, hours) * 60);
@@ -452,7 +471,6 @@ function buildPresetSelect(el){
 function modelEnergyNominalWh(m){ return m.V * m.Ah; }
 function modelEnergyUsefulWh(m, modo){ return modelEnergyNominalWh(m) * m.eff * DoD[modo]; }
 
-/* =================== LINHAS =================== */
 function rowIsValid(tr){
   const idxStr = tr.querySelector('.cargaSel').value;
   const qty = parseQtd(tr.querySelector('.qty').value || '');
@@ -645,8 +663,8 @@ function collectRowsValidated(){
     tr.querySelector('.horas').value = horasAdj > 0 ? formatHorasBR(horasAdj, 2) : '';
     tr.querySelector('.qty').value = String(qty);
 
-    const w  = p.power * qty;       // potência simultânea
-    const wh = w * horasAdj;        // energia por dia (tempos informados)
+    const w  = p.power * qty;
+    const wh = w * horasAdj;
     const pk = w * p.pico;
 
     items.push({ name:p.name, power:p.power, pico:p.pico, qty, horas:horasAdj, w, wh, pk });
@@ -666,7 +684,6 @@ function calcTotals(items){
   return { totW, totWh, totPk };
 }
 
-/* =================== CARDS =================== */
 function renderCards(container, results){
   container.innerHTML = '';
   for (const r of results){
@@ -713,7 +730,6 @@ function markRecommendedSmallestCompatible(results){
   return results.map(x => ({...x, recommended: (x.compat && x.name === recName)}));
 }
 
-/* =================== RESET (NOVO CÁLCULO) =================== */
 function novoCalculo(){
   hideMsg();
   secDia.style.display = 'none';
@@ -726,7 +742,6 @@ function novoCalculo(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-/* =================== CALC (NÃO ALTERADO) =================== */
 btnCalc.addEventListener('click', () => {
   hideMsg();
 
@@ -741,7 +756,6 @@ btnCalc.addEventListener('click', () => {
   const modo = getModo();
   const totals = calcTotals(got.items);
 
-  // --------- POR DIA (usa tempos para energia e autonomia em "dias")
   const resDiaRaw = MODELOS.map(m => {
     const energyNominalWh = modelEnergyNominalWh(m);
     const energyUsefulWh  = modelEnergyUsefulWh(m, modo);
@@ -768,7 +782,6 @@ btnCalc.addEventListener('click', () => {
   });
   const resDia = markRecommendedSmallestCompatible(resDiaRaw);
 
-  // --------- CONTÍNUA (ignora tempos; exige mínimo de 45min)
   const resContRaw = MODELOS.map(m => {
     const energyNominalWh = modelEnergyNominalWh(m);
     const energyUsefulWh  = modelEnergyUsefulWh(m, modo);
@@ -778,7 +791,7 @@ btnCalc.addEventListener('click', () => {
 
     let contMinutes = 0;
     if (totals.totW > 0){
-      contMinutes = (energyUsefulWh / totals.totW) * 60; // Wh/W = h
+      contMinutes = (energyUsefulWh / totals.totW) * 60;
     }
 
     const passMin = contMinutes >= MIN_CONT_MINUTES - 1e-9;
@@ -798,7 +811,6 @@ btnCalc.addEventListener('click', () => {
   });
   const resCont = markRecommendedSmallestCompatible(resContRaw);
 
-  // Mostrar seções
   secDia.style.display = 'block';
   secCont.style.display = 'block';
   renderCards(cardsDia, resDia);
@@ -812,7 +824,6 @@ btnCalc.addEventListener('click', () => {
 
 btnNovo.addEventListener('click', novoCalculo);
 
-/* =================== INIT =================== */
 function init(){
   tbody.innerHTML = '';
   tbody.appendChild(makeRowBlank());
