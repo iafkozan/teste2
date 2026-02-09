@@ -31,7 +31,7 @@
     body{
       margin:0;background:var(--bg);color:var(--text);
       font:14px/1.35 system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      overflow-x:hidden; /* nunca rolagem horizontal */
+      overflow-x:hidden;
     }
     .wrap{max-width:1100px;margin:16px auto;padding:0 12px}
 
@@ -71,20 +71,22 @@
     select,input{
       background:#fff;border:1px solid var(--line);color:var(--text);
       border-radius:12px;
-      padding:10px 12px;
-      min-height:40px;
+      padding:9px 10px;
+      min-height:38px;
       font-size:14px;
+      width:100%;
     }
 
-    .hr{height:2px;background:rgba(15,23,42,.08);margin:10px 0} /* linha mais grossa */
+    .hr{height:2px;background:rgba(15,23,42,.08);margin:10px 0}
 
-    /* ===== Desktop/tablet: tabela normal sem barra horizontal ===== */
+    /* ===== Tabela desktop: col widths FIXAS e sem encavalar ===== */
     .tableWrap{
       border:1px solid var(--line);
       border-radius:14px;
       background:#fff;
-      overflow:visible; /* remove scrollbar */
+      overflow:hidden; /* mantém tudo dentro, inclusive botões */
     }
+
     table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
     thead th{
       background:var(--card2);
@@ -96,23 +98,34 @@
       white-space:nowrap;
     }
     td{
-      padding:10px;border-bottom:1px solid var(--line);vertical-align:middle
+      padding:10px;border-bottom:1px solid var(--line);vertical-align:middle;
+      overflow:hidden;
     }
     td.right{text-align:right}
     tbody tr:last-child td{border-bottom:none}
 
-    /* larguras compactas (evita overflow) */
-    col.c1{width:30%}   /* carga */
-    col.c2{width:12%}   /* potencia */
-    col.c3{width:10%}   /* qtd */
-    col.c4{width:12%}   /* tempo */
-    col.c5{width:14%}   /* consumo */
-    col.c6{width:14%}   /* pico */
-    col.c7{width:8%}    /* ação */
+    /* colgroup: não deixa estourar e evita sobreposição */
+    col.c1{width:260px}  /* Carga */
+    col.c2{width:92px}   /* Potência */
+    col.c3{width:72px}   /* Qtd */
+    col.c4{width:96px}   /* Tempo */
+    col.c5{width:112px}  /* Consumo */
+    col.c6{width:118px}  /* Pico */
+    col.c7{width:96px}   /* Ação */
+
+    @media (max-width: 980px){
+      col.c1{width:220px}
+      col.c2{width:86px}
+      col.c3{width:68px}
+      col.c4{width:92px}
+      col.c5{width:108px}
+      col.c6{width:112px}
+      col.c7{width:92px}
+    }
 
     .btn{
       background:var(--btn);border:1px solid var(--btn);
-      color:var(--btnText);border-radius:12px;padding:12px 14px;
+      color:var(--btnText);border-radius:12px;padding:10px 14px;
       cursor:pointer;min-height:40px;font-weight:800
     }
     .btn:hover{filter:brightness(.95)}
@@ -120,32 +133,44 @@
 
     .btnGhost{
       background:#fff;border:1px solid var(--line);
-      color:var(--text);border-radius:12px;padding:12px 14px;
+      color:var(--text);border-radius:12px;padding:10px 14px;
       cursor:pointer;min-height:40px;font-weight:800
     }
     .btnGhost:hover{background:var(--card2)}
 
     .iconBtn{
-      width:40px;height:40px;border-radius:12px;border:1px solid var(--line);
-      background:#fff;cursor:pointer;color:var(--text);font-size:18px
+      width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
+      background:#fff;cursor:pointer;color:var(--text);font-size:18px;
+      display:inline-flex;align-items:center;justify-content:center;
     }
     .iconBtn:hover{background:var(--card2)}
     .iconBtn:disabled{opacity:.40;cursor:not-allowed}
 
-    /* ===== Área de totais alinhada e compacta ===== */
+    .actionsRow{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      align-items:center;
+      width:100%;
+    }
+
+    /* ===== Área de totais: mesmos “blocos” do Uso (magenta) ===== */
     .totals{
       display:grid;
       grid-template-columns:repeat(12, 1fr);
       gap:8px;
-      align-items:start;
+      align-items:stretch;
     }
+
+    .kpi, .cfg{
+      border-radius:12px;
+      padding:10px 12px;
+      min-height:78px;          /* iguala alturas visualmente */
+    }
+
     .kpi{
       background:linear-gradient(180deg, rgba(246,195,75,.09), rgba(246,195,75,0));
       border:1px solid rgba(246,195,75,.32);
-      border-radius:12px;
-      padding:8px 10px;
-      align-self:start;
-      min-height:64px;
     }
     .kpi .t{color:var(--muted);font-weight:900;font-size:11px}
     .kpi .v{font-size:16px;font-weight:900;margin-top:2px}
@@ -153,13 +178,10 @@
     .cfg{
       background:#eef2f7;
       border:1px solid var(--line);
-      border-radius:12px;
-      padding:8px 10px;
-      align-self:start;
-      min-height:64px;
     }
-    .cfg .title{color:var(--muted);font-size:11px;font-weight:900;margin-bottom:6px}
+    .cfg .title{color:var(--muted);font-size:11px;font-weight:900;margin-bottom:8px}
 
+    .pillRow{display:flex;gap:8px;flex-wrap:nowrap}
     .pill{
       display:flex;align-items:center;gap:8px;
       border:1px solid var(--line);
@@ -169,12 +191,11 @@
       min-height:38px;
       margin:0;
       cursor:pointer;
+      flex:1;
     }
     .pill span{font-size:13px}
-    .pillRow{display:flex;gap:8px;flex-wrap:nowrap}
-    .pill{flex:1}
 
-    /* posições (KPIs menores, Uso maior) */
+    /* grade: KPIs = 2 col cada, Uso = 6 col (igual antes, mas alinhado) */
     .k1{grid-column:span 2}
     .k2{grid-column:span 2}
     .k3{grid-column:span 2}
@@ -218,15 +239,14 @@
       background:rgba(255,255,255,.65);
     }
 
-    /* ===== Mobile: remove tabela e monta layout sem scroll ===== */
+    /* ===== Mobile: tabela vira cards, SEM scroll horizontal ===== */
     @media (max-width: 720px){
       .wrap{margin:12px auto}
       .card{padding:12px}
       .hero{padding:10px 12px}
       .hero h1{font-size:16px}
-      select,input{min-height:38px;padding:9px 11px;font-size:14px}
+      select,input{min-height:36px;padding:8px 10px;font-size:14px}
 
-      /* entra em modo card (sem scroll horizontal) */
       thead{display:none}
       table, tbody, tr, td{display:block;width:100%}
       tbody tr{
@@ -252,14 +272,6 @@
         margin-bottom:6px;
       }
 
-      .actionsRow{
-        display:flex;
-        gap:10px;
-        justify-content:flex-end;
-        align-items:center;
-      }
-
-      /* totais empilhados e compactos */
       .totals{grid-template-columns:1fr;gap:8px}
       .k1,.k2,.k3,.u1{grid-column:span 12}
       .kpi,.cfg{min-height:auto}
@@ -557,14 +569,14 @@ function makeRowBlank(){
   const tr = document.createElement('tr');
 
   tr.innerHTML = `
-    <td data-label="Carga"><select class="cargaSel need" style="width:100%"></select></td>
+    <td data-label="Carga"><select class="cargaSel need"></select></td>
     <td data-label="Potência (W)" class="right"><span class="pot">0</span></td>
     <td data-label="Qtd" class="right"><input class="qty need" type="text" inputmode="numeric" value=""></td>
     <td data-label="Tempo (h)" class="right"><input class="horas need" type="text" inputmode="decimal" value=""></td>
     <td data-label="Consumo (Wh)" class="right"><span class="consumo">0</span></td>
     <td data-label="Pico total (W)" class="right"><span class="picoTot">0</span></td>
     <td data-label="Ação" class="right">
-      <div class="actionsRow" style="white-space:nowrap">
+      <div class="actionsRow">
         <button class="iconBtn btnPlus" title="Adicionar nova linha">＋</button>
         <button class="iconBtn btnDel" title="Remover linha">🗑</button>
       </div>
