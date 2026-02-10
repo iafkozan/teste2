@@ -67,7 +67,6 @@
       background:linear-gradient(90deg, var(--yellow), rgba(246,195,75,0));
     }
 
-    /* ===== Inputs mais finos (SÓ texto/select) ===== */
     select,
     input[type="text"]{
       background:#fff;border:1px solid var(--line);color:var(--text);
@@ -78,13 +77,8 @@
       width:100%;
     }
 
-    /* radio normal */
     input[type="radio"]{
-      width:auto;
-      height:auto;
-      margin:0;
-      transform:none;
-      accent-color:auto;
+      width:auto;height:auto;margin:0;transform:none;accent-color:auto;
     }
 
     .hr{height:2px;background:rgba(15,23,42,.08);margin:10px 0}
@@ -113,22 +107,19 @@
     td.right{text-align:right}
     tbody tr:last-child td{border-bottom:none}
 
-    col.c1{width:260px}
-    col.c2{width:92px}
-    col.c3{width:72px}
-    col.c4{width:96px}
-    col.c5{width:112px}
-    col.c6{width:118px}
-    col.c7{width:96px}
+    /* ===== PC: todas as colunas (exceto Carga) MESMA largura =====
+       1) Carga fixa em px
+       2) as 6 demais colunas iguais via calc((100% - carga)/6) */
+    col.c1{width:320px;}
+    col.c2, col.c3, col.c4, col.c5, col.c6, col.c7{width:calc((100% - 320px)/6);}
 
+    @media (max-width: 1100px){
+      col.c1{width:280px;}
+      col.c2, col.c3, col.c4, col.c5, col.c6, col.c7{width:calc((100% - 280px)/6);}
+    }
     @media (max-width: 1024px){
-      col.c1{width:220px}
-      col.c2{width:86px}
-      col.c3{width:68px}
-      col.c4{width:92px}
-      col.c5{width:108px}
-      col.c6{width:112px}
-      col.c7{width:92px}
+      col.c1{width:240px;}
+      col.c2, col.c3, col.c4, col.c5, col.c6, col.c7{width:calc((100% - 240px)/6);}
     }
 
     .btn{
@@ -147,16 +138,17 @@
     .btnGhost:hover{background:var(--card2)}
 
     .iconBtn{
-      width:38px;height:38px;border-radius:12px;border:1px solid var(--line);
+      width:34px;height:34px;border-radius:12px;border:1px solid var(--line);
       background:#fff;cursor:pointer;color:var(--text);font-size:18px;
       display:inline-flex;align-items:center;justify-content:center;
+      flex:0 0 auto;
     }
     .iconBtn:hover{background:var(--card2)}
     .iconBtn:disabled{opacity:.40;cursor:not-allowed}
 
     .actionsRow{
       display:flex;
-      gap:8px;
+      gap:6px;
       justify-content:flex-end;
       align-items:center;
       width:100%;
@@ -245,32 +237,54 @@
       background:rgba(255,255,255,.65);
     }
 
-    /* ===== Quebra para vertical ANTES de começar a “sumir” campo ===== */
+    /* ===== Mobile: quebra antes de “sumir” campo + agrupa 2 em 2 ===== */
     @media (max-width: 980px){
       thead{display:none}
-      table, tbody, tr, td{display:block;width:100%}
+
+      table, tbody{display:block;width:100%}
       tbody tr{
-        border-bottom:none;
-        background:#fff;
+        display:grid;
+        grid-template-columns: 1fr 120px;
+        grid-template-areas:
+          "carga pot"
+          "qtd tempo"
+          "cons pico"
+          "acao acao";
+        gap:8px;
         border:1px solid var(--line);
         border-radius:14px;
         margin:10px 0;
-        overflow:hidden;
+        padding:10px;
+        background:#fff;
       }
       td{
-        border-bottom:1px solid var(--line);
-        padding:10px 12px;
+        border:none;
+        padding:0;
+        overflow:visible;
       }
-      td:last-child{border-bottom:none}
       td.right{text-align:left}
+
+      /* rótulo pequeno dentro do campo */
       td[data-label]::before{
         content: attr(data-label);
         display:block;
         color:var(--muted);
         font-weight:900;
-        font-size:11px;
-        margin-bottom:6px;
+        font-size:10px;
+        margin:0 0 4px 2px;
       }
+
+      .td-carga{grid-area:carga}
+      .td-pot{grid-area:pot}
+      .td-qtd{grid-area:qtd}
+      .td-tempo{grid-area:tempo}
+      .td-cons{grid-area:cons}
+      .td-pico{grid-area:pico}
+      .td-acao{grid-area:acao}
+
+      .actionsRow{justify-content:flex-end}
+
+      select, input[type="text"]{min-height:36px;padding:8px 10px}
 
       .totals{grid-template-columns:1fr;gap:8px}
       .k1,.k2,.k3,.u1{grid-column:span 12}
@@ -569,13 +583,13 @@ function makeRowBlank(){
   const tr = document.createElement('tr');
 
   tr.innerHTML = `
-    <td data-label="Carga"><select class="cargaSel need"></select></td>
-    <td data-label="Potência (W)" class="right"><span class="pot">0</span></td>
-    <td data-label="Qtd" class="right"><input class="qty need" type="text" inputmode="numeric" value=""></td>
-    <td data-label="Tempo (h)" class="right"><input class="horas need" type="text" inputmode="decimal" value=""></td>
-    <td data-label="Consumo (Wh)" class="right"><span class="consumo">0</span></td>
-    <td data-label="Pico total (W)" class="right"><span class="picoTot">0</span></td>
-    <td data-label="Ação" class="right">
+    <td class="td-carga" data-label="Carga"><select class="cargaSel need"></select></td>
+    <td class="td-pot right" data-label="Potência (W)"><span class="pot">0</span></td>
+    <td class="td-qtd right" data-label="Qtd"><input class="qty need" type="text" inputmode="numeric" value=""></td>
+    <td class="td-tempo right" data-label="Tempo (h)"><input class="horas need" type="text" inputmode="decimal" value=""></td>
+    <td class="td-cons right" data-label="Consumo (Wh)"><span class="consumo">0</span></td>
+    <td class="td-pico right" data-label="Pico total (W)"><span class="picoTot">0</span></td>
+    <td class="td-acao right" data-label="Ação">
       <div class="actionsRow">
         <button class="iconBtn btnPlus" title="Adicionar nova linha">＋</button>
         <button class="iconBtn btnDel" title="Remover linha">🗑</button>
@@ -769,8 +783,8 @@ btnCalc.addEventListener('click', () => {
   const totals = calcTotals(got.items);
 
   const resDiaRaw = MODELOS.map(m => {
-    const energyNominalWh = modelEnergyNominalWh(m);
-    const energyUsefulWh  = modelEnergyUsefulWh(m, modo);
+    const energyNominalWh = (m.V * m.Ah);
+    const energyUsefulWh  = energyNominalWh * m.eff * DoD[modo];
 
     const passW  = totals.totW  <= m.contW + 1e-9;
     const passPk = totals.totPk <= m.peakW + 1e-9;
@@ -795,8 +809,8 @@ btnCalc.addEventListener('click', () => {
   const resDia = markRecommendedSmallestCompatible(resDiaRaw);
 
   const resContRaw = MODELOS.map(m => {
-    const energyNominalWh = modelEnergyNominalWh(m);
-    const energyUsefulWh  = modelEnergyUsefulWh(m, modo);
+    const energyNominalWh = (m.V * m.Ah);
+    const energyUsefulWh  = energyNominalWh * m.eff * DoD[modo];
 
     const passW  = totals.totW  <= m.contW + 1e-9;
     const passPk = totals.totPk <= m.peakW + 1e-9;
